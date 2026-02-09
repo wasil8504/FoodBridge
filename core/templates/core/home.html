@@ -1,0 +1,68 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+
+        <!-- Hero Section -->
+        <div class="card shadow home-card text-center p-5">
+
+            <h1 class="home-title mb-3">Food Bridge</h1>
+
+            <p class="home-subtitle mb-4">
+                A platform that connects <strong>Food Donors</strong>,
+                <strong>NGOs</strong>, and <strong>Volunteers</strong>
+                to reduce food waste and fight hunger.
+            </p>
+
+            <!-- Roles -->
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="role-box">
+                        <div class="role-icon">🍲</div>
+                        <h5>Food Donor</h5>
+                        <p>Donate surplus food and track your contributions.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="role-box">
+                        <div class="role-icon">🏥</div>
+                        <h5>NGO</h5>
+                        <p>Request food donations and manage volunteers.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="role-box">
+                        <div class="role-icon">🚚</div>
+                        <h5>Volunteer</h5>
+                        <p>Deliver food safely and mark deliveries complete.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            {% if not user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-2">
+                        Login
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-success btn-lg">
+                        Get Started
+                    </a>
+                </div>
+            {% else %}
+                <div class="mt-4">
+                    <a href="/dashboard/" class="btn btn-dark btn-lg">
+                        Go to Dashboard
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

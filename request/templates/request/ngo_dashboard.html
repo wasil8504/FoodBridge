@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">NGO Dashboard</h3>
+        <a href="{% url 'request_donation:available_donations' %}"
+           class="btn btn-primary">
+            View Available Donations
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Food</th>
+                    <th>Status</th>
+                    <th>Volunteer</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.donation.food_name }}</td>
+
+                    <td>
+                        {% if r.status == 'PENDING' %}
+                            <span class="badge bg-warning text-dark">Pending</span>
+                        {% elif r.status == 'ASSIGNED' %}
+                            <span class="badge bg-primary">Assigned</span>
+                        {% elif r.status == 'COMPLETED' %}
+                            <span class="badge bg-success">Completed</span>
+                        {% else %}
+                            <span class="badge bg-secondary">{{ r.status }}</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {{ r.assigned_volunteer.username|default:"Not Assigned" }}
+                    </td>
+
+                    <td class="text-end">
+                        {% if r.status == 'PENDING' %}
+                            <a href="{% url 'request_donation:assign_volunteer' r.id %}"
+                               class="btn btn-sm btn-outline-warning">
+                               Assign
+                            </a>
+                        {% else %}
+                            <span class="text-success fw-semibold">
+                                ✓ Assigned
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        No donation requests yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

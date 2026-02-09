@@ -1,0 +1,83 @@
+{% extends 'core/base.html' %}
+{% block content %}
+
+<div class="card shadow p-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Volunteer Dashboard</h3>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Food</th>
+                    <th>Pickup Address</th>
+                    <th>Status</th>
+                    <th class="text-end">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for r in requests %}
+                <tr>
+                    <td>{{ r.donation.food_name }}</td>
+
+                    <td>
+                        <span class="text-muted">
+                            {{ r.donation.pickup_address }}
+                        </span>
+                    </td>
+
+                    <td>
+                        {% if r.delivery %}
+                            {% if r.delivery.status == 'IN_PROGRESS' %}
+                                <span class="badge bg-warning text-dark">
+                                    In Progress
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success">
+                                    Completed
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-secondary">
+                                Not Started
+                            </span>
+                        {% endif %}
+                    </td>
+
+                    <td class="text-end">
+                        {% if not r.delivery %}
+                            <a href="{% url 'delivery:start_delivery' r.id %}"
+                               class="btn btn-sm btn-outline-primary">
+                               Start
+                            </a>
+
+                        {% elif r.delivery.status == 'IN_PROGRESS' %}
+                            <a href="{% url 'delivery:complete_delivery' r.delivery.id %}"
+                               class="btn btn-sm btn-outline-success">
+                               Mark Completed
+                            </a>
+
+                        {% else %}
+                            <span class="text-success fw-semibold">
+                                ✓ Done
+                            </span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted py-4">
+                        No assigned deliveries yet
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

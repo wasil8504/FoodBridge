@@ -1,0 +1,265 @@
+/* =========================
+   GLOBAL STYLES
+========================= */
+
+:root {
+    --primary: #198754;   /* Bootstrap green */
+    --dark: #212529;
+    --light-bg: #f8f9fa;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont;
+    background-color: var(--light-bg);
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+.navbar {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.navbar-brand {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #fff;
+    text-decoration: underline;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.card {
+    border: none;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* =========================
+   HEADINGS
+========================= */
+
+h1, h2, h3 {
+    font-weight: 600;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.btn {
+    border-radius: 30px;
+    font-weight: 500;
+    padding: 8px 20px;
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+}
+
+.btn-success {
+    background-color: var(--primary);
+}
+
+.btn-danger {
+    background-color: #dc3545;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-control,
+.form-select {
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.15rem rgba(25, 135, 84, 0.25);
+}
+
+label {
+    font-weight: 500;
+}
+
+/* =========================
+   AUTH PAGES
+========================= */
+
+.auth-card {
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* =========================
+   FOOTER (OPTIONAL)
+========================= */
+
+.footer {
+    margin-top: 80px;
+    padding: 20px 0;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Donation Tables */
+.table-hover tbody tr:hover {
+    background-color: rgba(25, 135, 84, 0.05);
+}
+
+/* Status Badges */
+.badge {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    border-radius: 20px;
+}
+
+/* Action Buttons */
+.btn-outline-primary,
+.btn-outline-danger {
+    border-radius: 20px;
+}
+
+/* Page Cards */
+.card h3 {
+    font-weight: 600;
+}
+
+/* NGO Dashboard */
+.table thead th {
+    font-weight: 600;
+}
+
+/* Highlight food name */
+.alert-light {
+    background-color: #f8f9fa;
+}
+
+/* Status badges */
+.badge {
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+/* Dashboard card spacing */
+.card {
+    margin-bottom: 30px;
+}
+
+/* Available Donations */
+.table-hover tbody tr:hover {
+    background-color: rgba(25, 135, 84, 0.06);
+}
+
+.btn-success {
+    font-weight: 500;
+}
+
+/* Volunteer Dashboard */
+.table-hover tbody tr:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+}
+
+/* =========================
+   HOME HERO WITH FADED IMAGE
+========================= */
+
+.home-hero {
+    position: relative;
+    min-height: 85vh;
+    background-image: url("/static/images/food_donation.jpg");
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    align-items: center;
+}
+
+/* Dark fade overlay */
+.home-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+/* Text */
+.home-title {
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.home-subtitle {
+    font-size: 1.15rem;
+    max-width: 750px;
+    margin: 0 auto;
+    line-height: 1.7;
+    opacity: 0.95;
+}
+
+/* Light role cards */
+.role-box-light {
+    background: rgba(255, 255, 255, 0.9);
+    color: #212529;
+    padding: 22px;
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.role-box-light:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+}
+
+.role-icon {
+    font-size: 2.3rem;
+    margin-bottom: 8px;
+}
+
+.role-box-light h5 {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.role-box-light p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 0;
+}
