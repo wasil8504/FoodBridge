@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-pigo1v0u%iiz-k2ou@^2r8!*c=)+)b@obm^*2&s@@662@k57%r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['wasilph.pythonanywhere.com']
 
 
 # Application definition
@@ -126,6 +126,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 AUTH_USER_MODEL = 'core.User'
 
