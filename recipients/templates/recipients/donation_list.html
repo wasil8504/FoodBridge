@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Available Donations - Food Bridge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Available Donations</h1>
+    {% if donations %}
+        <div class="row g-4">
+            {% for donation in donations %}
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ donation.get_food_type_display }}</h5>
+                            <p class="card-text">{{ donation.description|truncatewords:25 }}</p>
+                            <p class="mb-1"><strong>Quantity:</strong> {{ donation.quantity }} {{ donation.quantity_unit }}</p>
+                            <p class="mb-1"><strong>Location:</strong> {{ donation.pickup_location }}</p>
+                            <p class="mb-1"><strong>Pickup Window:</strong> {{ donation.pickup_window_start|date:"M d, Y H:i" }} - {{ donation.pickup_window_end|date:"M d, Y H:i" }}</p>
+                            <a href="{% url 'recipients:donation_detail' donation.pk %}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No donations are available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

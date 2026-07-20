@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipient Registration - Food Bridge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-sm">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Register as Recipient</h2>
+                    <p class="text-center text-muted mb-4">Join our network of verified recipients</p>
+                    <form method="post" action="{% url 'accounts:register_recipient' %}" novalidate>
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label">Username</label>
+                            {{ form.username }}
+                            {% if form.username.help_text %}
+                            <div class="form-text">{{ form.username.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.username.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_email" class="form-label">Email</label>
+                            {{ form.email }}
+                            {% if form.email.help_text %}
+                            <div class="form-text">{{ form.email.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.email.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_phone_number" class="form-label">Phone Number (optional)</label>
+                            {{ form.phone_number }}
+                            {% if form.phone_number.help_text %}
+                            <div class="form-text">{{ form.phone_number.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.phone_number.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_address" class="form-label">Address (optional)</label>
+                            {{ form.address }}
+                            {% if form.address.help_text %}
+                            <div class="form-text">{{ form.address.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.address.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password1" class="form-label">Password</label>
+                            {{ form.password1 }}
+                            {% if form.password1.help_text %}
+                            <div class="form-text">{{ form.password1.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.password1.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3">
+                            <label for="id_password2" class="form-label">Confirm Password</label>
+                            {{ form.password2 }}
+                            {% if form.password2.help_text %}
+                            <div class="form-text">{{ form.password2.help_text }}</div>
+                            {% endif %}
+                            {% for error in form.password2.errors %}
+                            <div class="text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Create Account</button>
+                        </div>
+                    </form>
+                    <p class="text-center mt-3">
+                        Already have an account? <a href="{% url 'accounts:login' %}">Sign In</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Food Bridge - Bridging Surplus Food with Communities in Need{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <section class="hero mb-5">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4">Bridging Surplus Food with Communities in Need</h1>
+                <p class="lead">Connecting donors with verified recipients to reduce food waste and fight hunger.</p>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                    <a href="{% url 'accounts:register_donor' %}" class="btn btn-primary btn-lg me-2">Become a Donor</a>
+                    <a href="{% url 'accounts:register_recipient' %}" class="btn btn-outline-light btn-lg">Register as Recipient</a>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <img src="https://via.placeholder.com/600x400?text=Food+Donation+Illustration" alt="Food donation illustration" class="img-fluid rounded">
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Stats -->
+    <section class="stats-section mb-5">
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-egg-fried text-success"></i>
+                    <h3 class="stat-number">10,000+</h3>
+                    <p>Meals Donated</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-person-badge text-primary"></i>
+                    <h3 class="stat-number">500+</h3>
+                    <p>Active Donors</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-shop text-info"></i>
+                    <h3 class="stat-number">100+</h3>
+                    <p>Verified Recipients</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <i class="bi bi-globe text-warning"></i>
+                    <h3 class="stat-number">20+</h3>
+                    <p>Cities Covered</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works mb-5">
+        <h2 class="text-center mb-4">How It Works</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="step-card text-center">
+                    <div class="step-number">1</div>
+                    <h3>Donate</h3>
+                    <p>List your surplus food with details like quantity, expiry, and pickup location.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card text-center">
+                    <div class="step-number">2</div>
+                    <h3>Match</h3>
+                    <p>Our algorithm matches your donation with nearby verified recipients.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="step-card text-center">
+                    <div class="step-number">3</div>
+                    <h3>Deliver</h3>
+                    <p>Recipient picks up the donation, reducing waste and feeding those in need.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Donations -->
+    <section class="recent-donations mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Recent Donations</h2>
+            <a href="{% url 'donations:list' %}" class="btn btn-outline-secondary">View All</a>
+        </div>
+        <div class="row g-4" id="donationsList">
+            <!-- Donation cards will be loaded here via JavaScript or Django template -->
+            <div class="col-12">
+                <p class="text-center text-muted">No donations available at the moment.</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

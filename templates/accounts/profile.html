@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Account Profile - Food Bridge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title mb-4">Your Profile</h2>
+                    <p><strong>Username:</strong> {{ user.username }}</p>
+                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>Role:</strong> {{ user.role|capfirst }}</p>
+                    <p><strong>Phone:</strong> {{ user.phone_number }}</p>
+                    <p><strong>Address:</strong> {{ user.address }}</p>
+                    <a href="{% url 'website:home' %}" class="btn btn-primary">Back to Home</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipient Dashboard - Food Bridge{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1>Recipient Dashboard</h1>
+            <p class="lead">Browse available donations and manage your requests.</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2>Available Donations</h2>
+            {% if available_donations %}
+                <div class="list-group">
+                    {% for donation in available_donations %}
+                        <a href="{% url 'recipients:donation_detail' donation.pk %}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1">{{ donation.get_food_type_display }}</h5>
+                                <small>{{ donation.expiry_date|date:"M d, Y H:i" }}</small>
+                            </div>
+                            <p class="mb-1">{{ donation.description|truncatewords:20 }}</p>
+                            <small>{{ donation.quantity }} {{ donation.quantity_unit }} available at {{ donation.pickup_location }}</small>
+                        </a>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p>No donations available right now.</p>
+            {% endif %}
+        </div>
+        <div class="col-md-4">
+            <h2>My Requests</h2>
+            {% if requests %}
+                <ul class="list-group">
+                    {% for request in requests %}
+                        <li class="list-group-item">
+                            <strong>{{ request.donation.get_food_type_display }}</strong><br>
+                            Status: {{ request.get_status_display }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You have not requested any donations yet.</p>
+            {% endif %}
+            <a href="{% url 'recipients:my_requests' %}" class="btn btn-secondary mt-3">View All Requests</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
