@@ -6,29 +6,271 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="card-title mb-0"><i class="bi bi-plus-circle me-2"></i>Create Donation Listing</h2>
+                </div>
                 <div class="card-body">
-                    <h2 class="card-title mb-4">Create Donation Listing</h2>
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" novalidate>
                         {% csrf_token %}
-                        {{ form.non_field_errors }}
-                        {% for field in form %}
-                            <div class="mb-3">
-                                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
-                                {{ field }}
-                                {% if field.help_text %}
-                                    <div class="form-text">{{ field.help_text }}</div>
+
+                        <!-- Form Header -->
+                        <div class="mb-4">
+                            <p class="text-muted">
+                                Help reduce food waste by listing your surplus food donations.
+                                All donations are matched with verified recipients in your area.
+                            </p>
+                        </div>
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+
+                        <div class="row g-4">
+                            <!-- Food Type -->
+                            <div class="col-md-6">
+                                <label for="{{ form.food_type.id_for_label }}" class="form-label fw-medium">
+                                    Food Type <span class="text-danger">*</span>
+                                </label>
+                                {{ form.food_type }}
+                                {% if form.food_type.help_text %}
+                                <small class="form-text text-muted">{{ form.food_type.help_text }}</small>
                                 {% endif %}
-                                {% for error in field.errors %}
-                                    <div class="text-danger">{{ error }}</div>
+                                {% for error in form.food_type.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
                                 {% endfor %}
                             </div>
-                        {% endfor %}
-                        <button type="submit" class="btn btn-success">Submit Donation</button>
+
+                            <!-- Quantity -->
+                            <div class="col-md-6">
+                                <label for="{{ form.quantity.id_for_label }}" class="form-label fw-medium">
+                                    Quantity <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">{{ form.quantity.label_tag }}</span>
+                                    {{ form.quantity }}
+                                    <span class="input-group-text">{{ form.quantity_unit.label_tag }}</span>
+                                    {{ form.quantity_unit }}
+                                </div>
+                                {% if form.quantity.help_text or form.quantity_unit.help_text %}
+                                <small class="form-text text-muted">
+                                    {% if form.quantity.help_text %}{{ form.quantity.help_text }}{% endif %}
+                                    {% if form.quantity_unit.help_text %}{{ form.quantity_unit.help_text }}{% endif %}
+                                </small>
+                                {% endif %}
+                                {% for error in form.quantity.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                {% for error in form.quantity_unit.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Description -->
+                            <div class="col-12">
+                                <label for="{{ form.description.id_for_label }}" class="form-label fw-medium">
+                                    Description <span class="text-muted">(Optional)</span>
+                                </label>
+                                {{ form.description }}
+                                {% if form.description.help_text %}
+                                <small class="form-text text-muted">{{ form.description.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.description.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                <div class="char-counter mb-2">
+                                    <small>Characters remaining: <span class="counter-value">500</span></small>
+                                </div>
+                            </div>
+
+                            <!-- Expiry Date -->
+                            <div class="col-md-6">
+                                <label for="{{ form.expiry_date.id_for_label }}" class="form-label fw-medium">
+                                    Expiry Date <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                    {{ form.expiry_date }}
+                                </div>
+                                {% if form.expiry_date.help_text %}
+                                <small class="form-text text-muted">{{ form.expiry_date.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.expiry_date.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Pickup Location -->
+                            <div class="col-md-6">
+                                <label for="{{ form.pickup_location.id_for_label }}" class="form-label fw-medium">
+                                    Pickup Location <span class="text-danger">*</span>
+                                </label>
+                                {{ form.pickup_location }}
+                                {% if form.pickup_location.help_text %}
+                                <small class="form-text text-muted">{{ form.pickup_location.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.pickup_location.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Contact Information -->
+                            <div class="col-12">
+                                <label for="{{ form.contact_person.id_for_label }}" class="form-label fw-medium">
+                                    Contact Person <span class="text-danger">*</span>
+                                </label>
+                                {{ form.contact_person }}
+                                {% if form.contact_person.help_text %}
+                                <small class="form-text text-muted">{{ form.contact_person.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.contact_person.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="col-12">
+                                <label for="{{ form.contact_phone.id_for_label }}" class="form-label fw-medium">
+                                    Contact Phone <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                                    {{ form.contact_phone }}
+                                </div>
+                                {% if form.contact_phone.help_text %}
+                                <small class="form-text text-muted">{{ form.contact_phone.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.contact_phone.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Special Instructions -->
+                            <div class="col-12">
+                                <label for="{{ form.special_instructions.id_for_label }}" class="form-label fw-medium">
+                                    Special Instructions <span class="text-muted">(Optional)</span>
+                                </label>
+                                {{ form.special_instructions }}
+                                {% if form.special_instructions.help_text %}
+                                <small class="form-text text-muted">{{ form.special_instructions.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.special_instructions.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                                <div class="char-counter mb-2">
+                                    <small>Characters remaining: <span class="counter-value">300</span></small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-plane me-2"></i>Submit Donation Listing
+                            </button>
+                            <a href="{% url 'donors:dashboard' %}" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                                <i class="bi bi-x-lg me-2"></i>Cancel
+                            </a>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counters for textareas
+        const textareas = document.querySelectorAll('textarea[maxlength]');
+        textareas.forEach(textarea => {
+            const counter = document.createElement('div');
+            counter.className = 'char-counter mt-2';
+            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
+                               textarea.getAttribute('maxlength') + '</span></small>';
+            textarea.parentNode.appendChild(counter);
+
+            const updateCounter = () => {
+                const remaining = textarea.getAttribute('maxlength') - textarea.value.length;
+                counter.querySelector('.counter-value').textContent = remaining;
+                if (remaining < 10) {
+                    counter.querySelector('.counter-value').classList.add('text-danger');
+                } else {
+                    counter.querySelector('.counter-value').classList.remove('text-danger');
+                }
+            };
+
+            textarea.addEventListener('input', updateCounter);
+            updateCounter(); // Initial call
+        });
+
+        // Form validation styling
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+                    e.preventDefault();
+
+                    // Add invalid class to fields
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    inputs.forEach(input => {
+                        if (!input.checkValidity()) {
+                            input.classList.add('is-invalid');
+                            // Add shake animation
+                            input.animate([
+                                { transform: 'translateX(0)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(0)' }
+                            ], {
+                                duration: 300,
+                                iterations: 1
+                            });
+                        } else {
+                            input.classList.remove('is-invalid');
+                            input.classList.add('is-valid');
+                        }
+                    });
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                });
+            });
+        });
+
+        // Set min date for expiry date input to today
+        const expiryInput = document.querySelector('input[type="datetime-local"]');
+        if (expiryInput) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const today = `${year}-${month}-${day}T${hours}:${minutes}`;
+            expiryInput.setAttribute('min', today);
+        }
+    });
+</script>
 {% endblock %}

@@ -4,34 +4,305 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">My Donations</h1>
-    {% if donations %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Food Type</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
-                        <th>Expiry Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for donation in donations %}
-                        <tr>
-                            <td>{{ donation.get_food_type_display }}</td>
-                            <td>{{ donation.quantity }} {{ donation.quantity_unit }}</td>
-                            <td>{{ donation.get_status_display }}</td>
-                            <td>{{ donation.expiry_date|date:"M d, Y" }}</td>
-                            <td><a href="{% url 'donors:donation_detail' donation.pk %}" class="btn btn-sm btn-outline-primary">View</a></td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold mb-2">
+                <i class="bi bi-list-task me-2"></i>My Donations
+            </h1>
+            <p class="lead text-muted">
+                Track and manage all your food donation listings.
+                <span class="ms-2">
+                    {% if donations %}You have {{ donations|length }} active donation(s).{% else %}
+                    You haven't made any donations yet. <a href="{% url 'donors:create_donation' %}" class="text-decoration-none">Create your first donation</a> to get started.
+                    {% endif %}
+                </span>
+            </p>
         </div>
+    </div>
+
+    {% if donations %}
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search donations..." id="donationSearch">
+            </div>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a href="{% url 'donors:create_donation' %}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-plus-circle me-2"></i>Create New Donation
+            </a>
+            <button type="button" class="btn btn-outline-secondary" id="filterButton">
+                <i class="bi bi-funnel me-2"></i>Filter
+            </button>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-egg-fried fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Total Donations</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.total }}</p>
+                    <p class="text-opacity-75 mt-auto small">lifetime</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-box-seam fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Available</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.available }}</p>
+                    <p class="text-opacity-75 mt-auto small">ready for pickup</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-info h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-arrow-repeat fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Pending</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.pending }}</p>
+                    <p class="text-opacity-75 mt-auto small">awaiting confirmation</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-check-circle fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Completed</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.completed }}</p>
+                    <p class="text-opacity-75 mt-auto small">successfully delivered</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Food Type</th>
+                    <th>Quantity</th>
+                    <th>Status</th>
+                    <th>Expiry</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="donationTableBody">
+                {% for donation in donations %}
+                <tr data-status="{{ donation.status }}" data-food-type="{{ donation.food_type }}">
+                    <td>
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0 me-3">
+                                <span class="badge bg-light text-primary rounded-pill fs-6">
+                                    {{ donation.get_food_type_display|slice:"0:1" }}
+                                </span>
+                            </div>
+                            <div>
+                                <div class="fw-medium">{{ donation.get_food_type_display }}</div>
+                                <small class="text-muted">ID: #{{ donation.id }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <strong>{{ donation.quantity }}</strong> {{ donation.quantity_unit }}
+                    </td>
+                    <td>
+                        <span class="badge badge-pill bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}warning{% elif donation.status == 'matched' %}info{% elif donation.status == 'claimed' %}primary{% elif donation.status == 'picked_up' %}secondary{% elif donation.status == 'completed' %}dark{% else %}secondary{% endif %}"
+                              style="font-size: 0.875rem;">
+                            {{ donation.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        {{ donation.expiry_date|date:"M d, Y<br><small class='text-muted'>H:i</small>"|safe }}
+                    </td>
+                    <td>
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'donors:donation_detail' donation.pk %}"
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye me-1"></i>View
+                            </a>
+                            {% if donation.status in 'available,pending' %}
+                            <a href="{% url 'donors:edit_donation' donation.pk %}"
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
+                            {% endif %}
+                            {% if donation.status == 'available' %}
+                            <button type="button" class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal" data-bs-target="#cancelModal{{ donation.pk }}">
+                                <i class="bi bi-trash me-1"></i>Cancel
+                            </button>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Cancel Modal -->
+                <div class="modal fade" id="cancelModal{{ donation.pk }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ donation.pk }}" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header bg-danger text-white">
+                                <h5 class="modal-title" id="cancelModalLabel{{ donation.pk }}">Cancel Donation</h5>
+                                <button type="button" class="btn-close btn-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p>Are you sure you want to cancel this donation?</p>
+                                <p><strong>{{ donation.get_food_type_display }}</strong> - {{ donation.quantity }} {{ donation.quantity_unit }}</p>
+                                <p class="text-muted">This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep Active</button>
+                                <form action="{% url 'donors:cancel_donation' donation.pk %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Yes, Cancel Donation</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% if not donations %}
+                <tr>
+                    <td colspan="5" class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
+                        <h5 class="text-muted mb-3">You haven't created any donations yet.</h5>
+                        <a href="{% url 'donors:create_donation' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Create Your First Donation
+                        </a>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center mt-4">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo;</span>
+            </li>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
     {% else %}
-        <p>No donations found. <a href="{% url 'donors:create_donation' %}">Create one now.</a></p>
+    <div class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
+        <h5 class="text-muted mb-3">You haven't created any donations yet.</h5>
+        <p class="text-muted">
+            Start by listing your surplus food donations to help those in need in your community.
+        </p>
+        <a href="{% url 'donors:create_donation' %}" class="btn btn-primary btn-lg mt-3">
+            <i class="bi bi-plus-circle me-2"></i>Create Your First Donation
+        </a>
+    </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.getElementById('donationSearch');
+        const tableBody = document.getElementById('donationTableBody');
+        const rows = tableBody.getElementsByTagName('tr');
+
+        if (searchInput && tableBody) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase();
+                let found = false;
+
+                Array.from(rows).forEach(row => {
+                    // Skip the "no donations" row
+                    if (row.colSpan === 5) return;
+
+                    const foodType = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                    const quantity = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    const status = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+
+                    if (foodType.includes(filter) || quantity.includes(filter) || status.includes(filter)) {
+                        row.style.display = '';
+                        found = true;
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                // Show/hide "no results" message
+                const noResultsRow = tableBody.querySelector('tr[colspan="5"]');
+                if (!found && !noResultsRow) {
+                    // Add no results row
+                    const noResults = document.createElement('tr');
+                    noResults.innerHTML = '<td colspan="5" class="text-center py-4"><i class="bi bi-search me-2"></i>No donations match your search.</td>';
+                    tableBody.appendChild(noResults);
+                } else if (found && noResultsRow) {
+                    // Remove no results row
+                    noResultsRow.remove();
+                }
+            });
+        }
+
+        // Add hover lift effect to table rows
+        const tableRows = document.querySelectorAll('#donationTableBody tr:not([colspan])');
+        tableRows.forEach(row => {
+            row.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
+            });
+            row.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+
+        // Status badge tooltips
+        const statusBadges = document.querySelectorAll('.badge[title]');
+        statusBadges.forEach(badge => {
+            new bootstrap.Tooltip(badge);
+        });
+    });
+</script>
 {% endblock %}

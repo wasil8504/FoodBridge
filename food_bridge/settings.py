@@ -80,14 +80,24 @@ WSGI_APPLICATION = 'food_bridge.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'food_bridge',
         'USER': 'foodbridge_user',
         'PASSWORD': 'password',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '3306',
     }
 }
+
+# For local development fallback to SQLite when DEBUG is True to avoid
+# requiring external DB drivers (mysqlclient) during quick dev/test runs.
+if DEBUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 
 # Password validation

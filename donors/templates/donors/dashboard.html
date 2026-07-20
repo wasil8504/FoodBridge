@@ -6,87 +6,231 @@
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
-            <h1>Donor Dashboard</h1>
-            <p class="lead">Manage your food donations and track your impact.</p>
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-house-door me-2"></i>Donor Dashboard
+            </h1>
+            <p class="lead text-muted">
+                Manage your food donations and track your impact.
+                <span class="ms-2">Last updated: {{ now|date:"F j, Y g:i a" }}</span>
+            </p>
         </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Stats Cards - Enhanced with Design System -->
     <div class="row mb-4">
         <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Total Donations</h5>
-                    <p class="card-text display-4">{{ stats.total }}</p>
+            <div class="card text-white bg-primary mb-3 h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-badge-check fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Total Donations</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.total }}</p>
+                    <p class="text-opacity-75 mt-auto small">lifetime impact</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Available for Donation</h5>
-                    <p class="card-text display-4">{{ stats.available }}</p>
+            <div class="card text-white bg-success mb-3 h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-box-seam fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Available for Donation</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.available }}</p>
+                    <p class="text-opacity-75 mt-auto small">ready for pickup</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Pending Matches</h5>
-                    <p class="card-text display-4">{{ stats.pending }}</p>
+            <div class="card text-white bg-info mb-3 h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-arrow-repeat fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Pending Matches</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.pending }}</p>
+                    <p class="text-opacity-75 mt-auto small">awaiting confirmation</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-body">
-                    <h5 class="card-title">Completed</h5>
-                    <p class="card-text display-4">{{ stats.completed }}</p>
+            <div class="card text-white bg-warning mb-3 h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3 opacity-75">
+                        <i class="bi bi-check-circle fs-4"></i>
+                    </div>
+                    <h5 class="card-title fw-bold">Completed</h5>
+                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.completed }}</p>
+                    <p class="text-opacity-75 mt-auto small">successfully delivered</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Recent Donations -->
+    <!-- Quick Actions -->
     <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-plus-circle me-2 text-primary"></i>Quick Actions</h5>
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'donors:create_donation' %}"
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-file-earmark-plus text-success me-2"></i>
+                            Create New Donation
+                        </a>
+                        <a href="{% url 'donors:donation_list' %}"
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-list-task me-2 text-info"></i>
+                            View All Donations
+                        </a>
+                        <a href="{% url 'accounts:profile' %}"
+                           class="list-group-item list-group-item-action d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2 text-warning"></i>
+                            Update Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card h-100 hover-lift border-0 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-bar-chart me-2 text-primary"></i>Recent Activity</h5>
+                    {% if donations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Food Item</th>
+                                    <th>Quantity</th>
+                                    <th>Status</th>
+                                    <th>Expiry</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for donation in donations %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="flex-shrink-0">
+                                                <span class="badge bg-light text-primary rounded-pill">
+                                                    {{ donation.get_food_type_display|slice:"0:1" }}
+                                                </span>
+                                            </div>
+                                            <div class="ms-2">
+                                                <div class="fw-medium">{{ donation.get_food_type_display }}</div>
+                                                <small class="text-muted">ID: #{{ donation.id }}</small>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <strong>{{ donation.quantity }}</strong> {{ donation.quantity_unit }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}warning{% elif donation.status == 'matched' %}info{% elif donation.status == 'claimed' %}primary{% elif donation.status == 'picked_up' %}secondary{% elif donation.status == 'completed' %}dark{% else %}secondary{% endif %}"
+                                              style="font-size: 0.875rem;">
+                                            {{ donation.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {{ donation.expiry_date|date:"M d, Y H:i" }}
+                                    </td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a href="{% url 'donors:donation_detail' donation.pk %}"
+                                               class="btn btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            {% if donation.status in 'available,pending' %}
+                                            <a href="{% url 'donors:edit_donation' donation.pk %}"
+                                               class="btn btn-outline-secondary">
+                                                <i class="bi bi-pencil"></i>
+                                            </a>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+                        <p class="text-muted mb-3">You haven't created any donations yet.</p>
+                        <a href="{% url 'donors:create_donation' %}"
+                           class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Create Your First Donation
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impact Summary -->
+    <div class="row">
         <div class="col-12">
-            <h2>My Donations</h2>
-            <a href="{% url 'donors:create_donation' %}" class="btn btn-primary mb-3">+ Create New Donation</a>
-            {% if donations %}
-            <div class="table-responsive">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Food Type</th>
-                            <th>Quantity</th>
-                            <th>Status</th>
-                            <th>Expiry Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for donation in donations %}
-                        <tr>
-                            <td>{{ donation.get_food_type_display }}</td>
-                            <td>{{ donation.quantity }} {{ donation.quantity_unit }}</td>
-                            <td>
-                                <span class="badge bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}warning{% elif donation.status == 'matched' %}info{% elif donation.status == 'claimed' %}primary{% elif donation.status == 'picked_up' %}secondary{% elif donation.status == 'completed' %}dark{% else %}secondary{% endif %}">
-                                    {{ donation.get_status_display }}
-                                </span>
-                            </td>
-                            <td>{{ donation.expiry_date|date:"M d, Y H:i" }}</td>
-                            <td>
-                                <a href="{% url 'donors:donation_detail' donation.pk %}" class="btn btn-sm btn-outline-primary">View</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-transparent border-bottom">
+                    <h4 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Impact Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="display-4 text-success mb-1">{{ stats.total_meals|default:0 }}</div>
+                                <p class="mb-0 text-muted">Meals Provided</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="display-4 text-warning mb-1">{{ stats.food_saved|default:0 }} lbs</div>
+                                <p class="mb-0 text-muted">Food Saved from Waste</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="display-4 text-info mb-1">{{ stats.co2_saved|default:0 }} kg</div>
+                                <p class="mb-0 text-muted">CO₂ Emissions Reduced</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <div class="display-4 text-primary mb-1">{{ stats.unique_recipients|default:0 }}</div>
+                                <p class="mb-0 text-muted">Unique Recipients Served</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            {% else %}
-            <p class="text-center py-5">You haven't created any donations yet. <a href="{% url 'donors:create_donation' %}" class="btn btn-outline-primary">Create your first donation</a></p>
-            {% endif %}
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add subtle animation to stats cards on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const statsCards = document.querySelectorAll('.card.text-white');
+        statsCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.classList.add('fade-in');
+            }, index * 100);
+        });
+    });
+
+    // Enhance status badges with tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusBadges = document.querySelectorAll('.badge[title]');
+        statusBadges.forEach(badge => {
+            new bootstrap.Tooltip(badge);
+        });
+    });
+</script>
 {% endblock %}

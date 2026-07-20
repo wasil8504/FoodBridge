@@ -6,47 +6,161 @@
 <div class="container">
     <div class="row mb-4">
         <div class="col-12">
-            <h1>Recipient Dashboard</h1>
-            <p class="lead">Browse available donations and manage your requests.</p>
+            <h1 class="display-5 fw-bold mb-2">
+                <i class="bi bi-house-door me-2"></i>Recipient Dashboard
+            </h1>
+            <p class="lead text-muted">
+                Browse available donations and manage your requests.
+                <span class="ms-2">Last updated: {{ now|date:"F j, Y g:i a" }}</span>
+            </p>
         </div>
     </div>
 
     <div class="row mb-4">
         <div class="col-md-8">
-            <h2>Available Donations</h2>
-            {% if available_donations %}
-                <div class="list-group">
-                    {% for donation in available_donations %}
-                        <a href="{% url 'recipients:donation_detail' donation.pk %}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1">{{ donation.get_food_type_display }}</h5>
-                                <small>{{ donation.expiry_date|date:"M d, Y H:i" }}</small>
-                            </div>
-                            <p class="mb-1">{{ donation.description|truncatewords:20 }}</p>
-                            <small>{{ donation.quantity }} {{ donation.quantity_unit }} available at {{ donation.pickup_location }}</small>
-                        </a>
-                    {% endfor %}
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-0"><i class="bi bi-box-seam me-2"></i>Available Donations</h5>
                 </div>
-            {% else %}
-                <p>No donations available right now.</p>
-            {% endif %}
+                <div class="card-body">
+                    {% if available_donations %}
+                    <div class="list-group list-group-flush">
+                        {% for donation in available_donations %}
+                        <a href="{% url 'recipients:donation_detail' donation.pk %}"
+                           class="list-group-item list-group-item-action hover-lift border-0">
+                            <div class="d-flex w-100 justify-content-between align-items-start">
+                                <div class="ms-2 me-auto">
+                                    <div class="fw-bold">{{ donation.get_food_type_display }}</div>
+                                    <small class="text-muted">{{ donation.expiry_date|date:"M d, Y H:i" }}</small>
+                                </div>
+                                <span
+                                    class="badge bg-{% if donation.days_until_expiry < 1 %}danger{% elif donation.days_until_expiry < 2 %}warning{% else %}success{% endif %} rounded-pill">
+                                    {{ donation.days_until_expiry }}d left
+                                </span>
+                            </div>
+                            <p class="mb-1 mt-2">{{ donation.description|truncatewords:20 }}</p>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <div>
+                                    <strong>{{ donation.quantity }}</strong> {{ donation.quantity_unit }}
+                                </div>
+                                <div>
+                                    <span class="badge bg-primary rounded-pill">
+                                        {{ donation.pickup_location|slice:"0:15" }}{% if donation.pickup_location|length > 15 %}...{% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-inbox fs-1 text-muted mb-3"></i>
+                        <p class="text-muted mb-3">No donations available right now.</p>
+                        <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-box-arrow-left me-2"></i>Check Back Later
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
         </div>
         <div class="col-md-4">
-            <h2>My Requests</h2>
-            {% if requests %}
-                <ul class="list-group">
-                    {% for request in requests %}
-                        <li class="list-group-item">
-                            <strong>{{ request.donation.get_food_type_display }}</strong><br>
-                            Status: {{ request.get_status_display }}
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>You have not requested any donations yet.</p>
-            {% endif %}
-            <a href="{% url 'recipients:my_requests' %}" class="btn btn-secondary mt-3">View All Requests</a>
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-0"><i class="bi bi-list-check me-2"></i>My Requests</h5>
+                </div>
+                <div class="card-body">
+                    {% if requests %}
+                    <div class="list-group list-group-flush">
+                        {% for request in requests %}
+                        <div class="list-group-item list-group-item-action hover-lift border-0">
+                            <div class="d-flex w-100 justify-content-between">
+                                <div>
+                                    <div class="fw-bold">{{ request.donation.get_food_type_display }}</div>
+                                    <small class="text-muted">Requested: {{ request.requested_at|date:"M d, Y H:i" }}</small>
+                                </div>
+                                <div>
+                                    <span class="badge bg-{% if request.status == 'pending' %}warning{% elif request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% elif request.status == 'completed' %}info{% else %}secondary{% endif %}">
+                                        {{ request.get_status_display }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-list-task fs-1 text-muted mb-3"></i>
+                        <p class="text-muted mb-3">You have not requested any donations yet.</p>
+                        <a href="{% url 'recipients:available_donations' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Browse Available Donations
+                        </a>
+                    </div>
+                    {% endif %}
+                    <div class="mt-3">
+                        <a href="{% url 'recipients:my_requests' %}" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-list me-2"></i>View All Requests
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Impact Summary for Recipients -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                    <h4 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Your Impact</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="text-success">
+                                <div class="display-4 mb-1">{{ stats.meals_received|default:0 }}</div>
+                                <p class="mb-0">Meals Received</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-warning">
+                                <div class="display-4 mb-1">{{ stats.food_received|default:0 }} lbs</div>
+                                <p class="mb-0">Food Received</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-info">
+                                <div class="display-4 mb-1">{{ stats.requests_made|default:0 }}</div>
+                                <p class="mb-0">Requests Made</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-primary">
+                                <div class="display-4 mb-1">{{ stats.donors_helped|default:0 }}</div>
+                                <p class="mb-0">Donors Supported</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add hover effect to list items
+    document.addEventListener('DOMContentLoaded', function() {
+        const listItems = document.querySelectorAll('.list-group-item-action');
+        listItems.forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
+            });
+            item.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+    });
+</script>
 {% endblock %}

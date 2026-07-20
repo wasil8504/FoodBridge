@@ -4,97 +4,242 @@
 
 {% block content %}
 <div class="container">
-    <!-- Hero Section -->
-    <section class="hero mb-5">
-        <div class="row align-items-center">
+    <!-- Hero Section - Enhanced with Design System -->
+    <section class="hero mb-5 hover-lift">
+        <div class="row align-items-center g-4">
             <div class="col-md-6">
-                <h1 class="display-4">Bridging Surplus Food with Communities in Need</h1>
-                <p class="lead">Connecting donors with verified recipients to reduce food waste and fight hunger.</p>
+                <h1 class="display-4 fw-bold mb-3">
+                    Bridging Surplus Food<br><span class="text-primary">with Communities in Need</span>
+                </h1>
+                <p class="lead mb-4">
+                    Connecting donors with verified recipients to reduce food waste and fight hunger.
+                </p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                    <a href="{% url 'accounts:register_donor' %}" class="btn btn-primary btn-lg me-2">Become a Donor</a>
-                    <a href="{% url 'accounts:register_recipient' %}" class="btn btn-outline-light btn-lg">Register as Recipient</a>
+                    <a href="{% url 'accounts:register_donor' %}" class="btn btn-primary btn-lg me-2 mb-2 me-md-0">
+                        <i class="bi bi-plus-circle me-2"></i>Become a Donor
+                    </a>
+                    <a href="{% url 'accounts:register_recipient' %}" class="btn btn-outline-light btn-lg me-2 mb-2 me-md-0">
+                        <i class="bi bi-person-plus me-2"></i>Register as Recipient
+                    </a>
+                    <a href="#" class="btn btn-outline-secondary btn-lg" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                        <i class="bi bi-info-circle me-2"></i>Learn More
+                    </a>
                 </div>
             </div>
             <div class="col-md-6">
-                <img src="https://via.placeholder.com/600x400?text=Food+Donation+Illustration" alt="Food donation illustration" class="img-fluid rounded">
+                <div class="ratio ratio-16x9">
+                    <img src="https://via.placeholder.com/800x450?text=Food+Donation+Illustration"
+                         alt="Diverse group of people sharing food donations"
+                         class="img-fluid rounded shadow-sm"
+                         loading="lazy">
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Impact Stats -->
+    <!-- Impact Stats - Enhanced with Design Tokens -->
     <section class="stats-section mb-5">
         <div class="row text-center g-4">
             <div class="col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-egg-fried text-success"></i>
-                    <h3 class="stat-number">10,000+</h3>
-                    <p>Meals Donated</p>
+                <div class="stat-card hover-lift border-primary">
+                    <i class="bi bi-egg-fried text-primary fs-1 mb-3"></i>
+                    <h3 class="stat-number text-primary">10,000+</h3>
+                    <p class="stat-label">Meals Donated</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-person-badge text-primary"></i>
-                    <h3 class="stat-number">500+</h3>
-                    <p>Active Donors</p>
+                <div class="stat-card hover-lift border-success">
+                    <i class="bi bi-person-badge text-success fs-1 mb-3"></i>
+                    <h3 class="stat-number text-success">500+</h3>
+                    <p class="stat-label">Active Donors</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-shop text-info"></i>
-                    <h3 class="stat-number">100+</h3>
-                    <p>Verified Recipients</p>
+                <div class="stat-card hover-lift border-info">
+                    <i class="bi bi-shop text-info fs-1 mb-3"></i>
+                    <h3 class="stat-number text-info">100+</h3>
+                    <p class="stat-label">Verified Recipients</p>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card">
-                    <i class="bi bi-globe text-warning"></i>
-                    <h3 class="stat-number">20+</h3>
-                    <p>Cities Covered</p>
+                <div class="stat-card hover-lift border-warning">
+                    <i class="bi bi-globe text-warning fs-1 mb-3"></i>
+                    <h3 class="stat-number text-warning">20+</h3>
+                    <p class="stat-label">Cities Covered</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- How It Works -->
+    <!-- How It Works - Enhanced with Visual Hierarchy -->
     <section class="how-it-works mb-5">
-        <h2 class="text-center mb-4">How It Works</h2>
+        <h2 class="text-center mb-4 fw-bold">
+            How It Works
+            <span class="text-primary">(Simple & Transparent)</span>
+        </h2>
         <div class="row g-4">
             <div class="col-md-4">
-                <div class="step-card text-center">
-                    <div class="step-number">1</div>
-                    <h3>Donate</h3>
-                    <p>List your surplus food with details like quantity, expiry, and pickup location.</p>
+                <div class="step-card text-center hover-lift border rounded-4 p-4">
+                    <div class="step-number bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                        1
+                    </div>
+                    <h3 class="h5 mb-3">Donate</h3>
+                    <p>
+                        List your surplus food with details like quantity, expiry, and pickup location.
+                        <br><small class="text-muted">Our system helps you maximize impact with minimal effort.</small>
+                    </p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="step-card text-center">
-                    <div class="step-number">2</div>
-                    <h3>Match</h3>
-                    <p>Our algorithm matches your donation with nearby verified recipients.</p>
+                <div class="step-card text-center hover-lift border rounded-4 p-4">
+                    <div class="step-number bg-success rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                        2
+                    </div>
+                    <h3 class="h5 mb-3">Match</h3>
+                    <p>
+                        Our intelligent algorithm matches your donation with nearby verified recipients.
+                        <br><small class="text-muted">We consider location, capacity, and dietary needs.</small>
+                    </p>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="step-card text-center">
-                    <div class="step-number">3</div>
-                    <h3>Deliver</h3>
-                    <p>Recipient picks up the donation, reducing waste and feeding those in need.</p>
+                <div class="step-card text-center hover-lift border rounded-4 p-4">
+                    <div class="step-number bg-info rounded-circle d-inline-flex align-items-center justify-content-center mb-3"
+                         style="width: 60px; height: 60px; font-size: 1.5rem; font-weight: bold;">
+                        3
+                    </div>
+                    <h3 class="h5 mb-3">Deliver</h3>
+                    <p>
+                        Recipient picks up the donation, reducing waste and feeding those in need.
+                        <br><small class="text-muted">Every donation makes a measurable difference.</small>
+                    </p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Recent Donations -->
+    <!-- Recent Donations - Enhanced with Better Visuals -->
     <section class="recent-donations mb-5">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Recent Donations</h2>
-            <a href="{% url 'donations:list' %}" class="btn btn-outline-secondary">View All</a>
+            <a href="{% url 'donations:list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-list me-2"></i>View All
+            </a>
         </div>
         <div class="row g-4" id="donationsList">
             <!-- Donation cards will be loaded here via JavaScript or Django template -->
             <div class="col-12">
-                <p class="text-center text-muted">No donations available at the moment.</p>
+                <div class="text-center py-5">
+                    <i class="bi bi-info-circle display-4 text-muted mb-3"></i>
+                    <p class="text-muted">No donations available at the moment.</p>
+                    <a href="{% url 'donors:create_donation' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-plus-circle me-2"></i>Be the First to Donate
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta-section bg-primary text-white py-5 rounded-4 mb-5">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-8 mx-auto">
+                    <h2 class="mb-4">Ready to Make a Difference?</h2>
+                    <p class="lead mb-4">
+                        Join hundreds of donors and recipients already making an impact in our community.
+                        our community.
+                    </p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{% url 'accounts:register_donor' %}" class="btn btn-light btn-lg me-2 mb-2 me-md-0">
+                            <i class="bi bi-plus-circle me-2"></i>Donate Food
+                        </a>
+                        <a href="{% url 'accounts:register_recipient' %}" class="btn btn-outline-light btn-lg">
+                            <i class="bi bi-hand-thumbs-up me-2"></i>Request Food
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 </div>
+
+<!-- About Modal -->
+<div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h1 class="modal-title fs-5" id="aboutModalLabel">About Food Bridge</h1>
+                <button type="button" class="btn-close btn-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>Our Mission</h5>
+                        <p>Food Bridge connects food donors (restaurants, grocery stores, event organizers, individuals) with verified community recipients (shelters, NGOs, community kitchens) to reduce food waste and fight hunger.</p>
+                        <h5>Our Impact</p>
+                        <ul class="list-unstyled">
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>Over 10,000 meals donated</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>500+ active donors</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>100+ verified recipients</li>
+                            <li><i class="bi bi-check-circle-fill text-success me-2"></i>20+ cities served</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>How We Work</h5>
+                        <ol class="ps-4">
+                            <li>Donors list surplus food with details</li>
+                            <li>Our system matches with nearby verified recipients</li>
+                            <li>Recipients accept and arrange pickup</li>
+                            <li>Food is delivered, reducing waste and feeding those in need</li>
+                        </ol>
+                        <div class="text-center mt-4">
+                            <a href="{% url 'accounts:register_donor' %}" class="btn btn-outline-primary me-2">
+                                Become a Donor
+                            </li>
+                            <a href="{% url 'accounts:register_recipient' %}" class="btn btn-outline-success">
+                                Request Food
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Add animation to hero section on load
+    document.addEventListener('DOMContentLoaded', function() {
+        const heroSection = document.querySelector('.hero');
+        if (heroSection) {
+            heroSection.classList.add('fade-in');
+        }
+
+        // Animate stat counters
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target') || counter.textContent.replace(/\D/g, ''));
+            if (!isNaN(target)) {
+                let count = 0;
+                const increment = Math.ceil(target / 100);
+                const timer = setInterval(() => {
+                    count += increment;
+                    if (count >= target) {
+                        count = target;
+                        clearInterval(timer);
+                    }
+                    counter.textContent = count.toLocaleString();
+                }, 20);
+            }
+        });
+    });
+</script>
 {% endblock %}
