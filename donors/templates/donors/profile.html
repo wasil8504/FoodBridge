@@ -4,42 +4,215 @@
 
 {% block content %}
 <div class="container">
-    <div class="row justify-content-center">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold mb-2">
+                <i class="bi bi-person-badge me-2"></i>Donor Profile
+            </h1>
+            <p class="lead text-muted">
+                Manage your organization's information and donation preferences.
+            </p>
+        </div>
+    </div>
+
+    <div class="row">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="bi bi-building me-2"></i>Organization Information</h5>
+                        <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary btn-sm">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </a>
+                    </div>
+                </div>
                 <div class="card-body">
-                    <h2 class="card-title mb-4">Donor Profile</h2>
-                    <form method="post">
+                    <form method="post" novalidate>
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label class="form-label">Organization Name</label>
-                            <input type="text" name="organization_name" value="{{ donor_profile.organization_name }}" class="form-control">
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Donor Type</label>
-                            <select name="donor_type" class="form-select">
-                                {% for value, label in donor_profile.DONOR_TYPE_CHOICES %}
-                                    <option value="{{ value }}" {% if donor_profile.donor_type == value %}selected{% endif %}>{{ label }}</option>
+                        {% endif %}
+
+                        <div class="row g-4">
+                            <!-- Organization Name -->
+                            <div class="col-md-6">
+                                <label for="{{ form.organization_name.id_for_label }}" class="form-label fw-medium">
+                                    Organization Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.organization_name }}
+                                {% if form.organization_name.help_text %}
+                                <small class="form-text text-muted">{{ form.organization_name.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.organization_name.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
                                 {% endfor %}
-                            </select>
+                            </div>
+
+                            <!-- Donor Type -->
+                            <div class="col-md-6">
+                                <label for="{{ form.donor_type.id_for_label }}" class="form-label fw-medium">
+                                    Donor Type <span class="text-danger">*</span>
+                                </label>
+                                {{ form.donor_type }}
+                                {% if form.donor_type.help_text %}
+                                <small class="form-text text-muted">{{ form.donor_type.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.donor_type.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Address -->
+                            <div class="col-12">
+                                <label for="{{ form.address.id_for_label }}" class="form-label fw-medium">
+                                    Address <span class="text-danger">*</span>
+                                </label>
+                                {{ form.address }}
+                                {% if form.address.help_text %}
+                                <small class="form-text text-muted">{{ form.address.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.address.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="col-md-6">
+                                <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-medium">
+                                    Phone Number <span class="text-danger">*</span>
+                                </label>
+                                {{ form.phone_number }}
+                                {% if form.phone_number.help_text %}
+                                <small class="form-text text-muted">{{ form.phone_number.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.phone_number.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- License Number -->
+                            <div class="col-md-6">
+                                <label for="{{ form.license_number.id_for_label }}" class="form-label fw-medium">
+                                    License Number
+                                </label>
+                                {{ form.license_number }}
+                                {% if form.license_number.help_text %}
+                                <small class="form-text text-muted">{{ form.license_number.help_text }}</small>
+                                {% endif %}
+                                {% for error in form.license_number.errors %}
+                                <div class="invalid-feedback d-block">{{ error }}</div>
+                                {% endfor %}
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Address</label>
-                            <textarea name="address" class="form-control" rows="3">{{ donor_profile.address }}</textarea>
+
+                        <!-- Submit Button -->
+                        <div class="col-12 mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-check-circle me-2"></i>Save Profile
+                            </button>
+                            <a href="{% url 'donors:dashboard' %}" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                                <i class="bi bi-arrow-left me-2"></i>Back to Dashboard
+                            </a>
                         </div>
-                        <div class="mb-3">
-                            <label class="form-label">Phone Number</label>
-                            <input type="text" name="phone_number" value="{{ donor_profile.phone_number }}" class="form-control">
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">License Number</label>
-                            <input type="text" name="license_number" value="{{ donor_profile.license_number }}" class="form-control">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Save Profile</button>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card hover-lift border-0 shadow-sm h-100">
+                <div class="card-header border-0">
+                    <h5 class="mb-0"><i class="bi bi-bar-chart-line me-2"></i>Your Impact</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="display-4 text-success mb-1">{{ stats.total_donations }}</div>
+                        <p class="mb-0">Total Donations</p>
+                    </div>
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <div class="display-4 text-warning mb-1">{{ stats.total_meals }} meals</div>
+                        <p class="mb-0">Meals Provided</p>
+                    </div>
+                    <hr class="my-4">
+                    <div class="text-center">
+                        <div class="display-4 text-info mb-1">{{ stats.total_weight }} lbs</div>
+                        <p class="mb-0">Food Saved from Waste</p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation styling
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+
+                    // Add invalid class to fields
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    inputs.forEach(input => {
+                        if (!input.checkValidity()) {
+                            input.classList.add('is-invalid');
+                            // Add shake animation
+                            input.animate([
+                                { transform: 'translateX(0)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(0)' }
+                            ], {
+                                duration: 300,
+                                iterations: 1
+                            });
+                        } else {
+                            input.classList.remove('is-invalid');
+                            input.classList.add('is-valid');
+                        }
+                    });
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                });
+            });
+        });
+
+        // Add hover effect to buttons
+        const buttons = document.querySelectorAll('.btn-outline-primary, .btn-outline-secondary');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+    });
+</script>
 {% endblock %}

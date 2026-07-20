@@ -6,29 +6,145 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h2 class="card-title mb-0"><i class="bi bi-file-earmark-text me-2"></i>{{ donation.get_food_type_display }}</h2>
+                </div>
                 <div class="card-body">
-                    <h2 class="card-title mb-3">{{ donation.get_food_type_display }}</h2>
-                    <p>{{ donation.description }}</p>
+                    {% if donation.description %}
+                    <p class="mb-4">{{ donation.description }}</p>
+                    {% endif %}
+
                     <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item"><strong>Quantity:</strong> {{ donation.quantity }} {{ donation.quantity_unit }}</li>
-                        <li class="list-group-item"><strong>Pickup Location:</strong> {{ donation.pickup_location }}</li>
-                        <li class="list-group-item"><strong>Pickup Window:</strong> {{ donation.pickup_window_start|date:"M d, Y H:i" }} - {{ donation.pickup_window_end|date:"M d, Y H:i" }}</li>
-                        <li class="list-group-item"><strong>Expiry Date:</strong> {{ donation.expiry_date|date:"M d, Y H:i" }}</li>
-                        <li class="list-group-item"><strong>Status:</strong> {{ donation.get_status_display }}</li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-box me-2"></i> Quantity:</span>
+                                <strong>{{ donation.quantity }} {{ donation.quantity_unit }}</strong>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-geo-alt me-2"></i> Pickup Location:</span>
+                                <span>{{ donation.pickup_location }}</span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-clock me-2"></i> Pickup Window:</span>
+                                <span>
+                                    {{ donation.pickup_window_start|date:"M d, Y H:i" }} -
+                                    {{ donation.pickup_window_end|date:"M d, Y H:i" }}
+                                </span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-calendar-x me-2"></i> Expiry Date:</span>
+                                <span class="text-{% if donation.is_expired %}danger{% elif donation.days_until_expiry < 1 %}warning{% else %}success{% endif %}">
+                                    {{ donation.expiry_date|date:"M d, Y H:i" }}
+                                    (<span class="badge bg-{% if donation.is_expired %}danger{% elif donation.days_until_expiry < 1 %}warning{% else %}success{% endif %}">
+                                        {{ donation.days_until_expiry }}d left
+                                    </span>
+                                </span>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="d-flex justify-content-between">
+                                <span><i class="bi bi-check-circle me-2"></i> Status:</span>
+                                <span class="badge bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}info{% elif donation.status == 'matched' %}primary{% elif donation.status == 'claimed' %}secondary{% elif donation.status == 'picked_up' %}dark{% elif donation.status == 'completed' %}secondary{% else %}secondary{% endif %}">
+                                    {{ donation.get_status_display }}
+                                </span>
+                            </div>
+                        </li>
                     </ul>
+
+                    {% if user.is_authenticated and user.role == 'recipient' and donation.status == 'available' %}
                     <form method="post" action="{% url 'recipients:request_donation' donation.pk %}">
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message to Donor (optional)</label>
-                            <textarea id="message" name="message" class="form-control" rows="4"></textarea>
+                        <div class="mb-4">
+                            <label for="message" class="form-label fw-medium">
+                                Message to Donor <span class="text-muted">(Optional)</span>
+                            </label>
+                            <textarea id="message" name="message" class="form-control" rows="4" maxlength="500"
+                                      placeholder="Add a note to the donor about your organization or pickup arrangements..."></textarea>
+                            {% if form.message.help_text %}
+                            <small class="form-text text-muted">{{ form.message.help_text }}</small>
+                            {% endif %}
+                            <div class="char-counter mt-2">
+                                <small>Characters remaining: <span class="counter-value">500</span></small>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Request Donation</button>
-                        <a href="{% url 'recipients:donation_list' %}" class="btn btn-link">Back to Listings</a>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Send Request
+                            </button>
+                            <a href="{% url 'recipients:donation_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x-lg me-2"></i>Cancel
+                            </a>
+                        </div>
                     </form>
+                    {% elif user.is_authenticated and user.role == 'donor' and donation.user == user %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'donors:edit_donation' donation.pk %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-pencil me-2"></i>Edit Donation
+                        </a>
+                        {% if donation.status == 'available' %}
+                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                            <i class="bi bi-trash me-2"></i>Cancel Donation
+                        </button>
+                        {% endif %}
+                        <a href="{% url 'donors:donation_list' %}" class="btn btn-outline-primary">
+                            <i class="bi bi-arrow-left me-2"></i>Back to Donations
+                        </a>
+                    </div>
+                    {% else %}
+                    <a href="{% if user.is_authenticated and user.role == 'donor' %}{% url 'donors:donation_list' %}{% else %}{% url 'recipients:donation_list' %}{% endif %}"
+                       class="btn btn-outline-primary w-100">
+                        <i class="bi bi-arrow-left me-2"></i>Back to Listings
+                    </a>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counter for message textarea (if present)
+        const messageTextarea = document.getElementById('id_message') || document.getElementById('message');
+        if (messageTextarea) {
+            const counter = document.createElement('div');
+            counter.className = 'char-counter mt-2';
+            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
+                               (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
+            messageTextarea.parentNode.appendChild(counter);
+
+            const updateCounter = () => {
+                const maxLength = messageTextarea.getAttribute('maxlength') || 500;
+                const remaining = maxLength - messageTextarea.value.length;
+                counter.querySelector('.counter-value').textContent = remaining;
+                if (remaining < 10) {
+                    counter.querySelector('.counter-value').classList.add('text-danger');
+                } else {
+                    counter.querySelector('.counter-value').classList.remove('text-danger');
+                }
+            };
+
+            messageTextarea.addEventListener('input', updateCounter);
+            messageTextarea.addEventListener('paste', () => {
+                setTimeout(updateCounter, 0);
+            });
+            updateCounter(); // Initial call
+        }
+
+        // Initialize tooltip for expiry badge if needed
+        const expiryBadge = document.querySelector('.badge[data-bs-toggle="tooltip"]');
+        if (expiryBadge) {
+            new bootstrap.Tooltip(expiryBadge);
+        }
+    });
+</script>
 {% endblock %}

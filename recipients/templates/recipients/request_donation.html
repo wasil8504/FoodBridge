@@ -6,23 +6,177 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
+            <div class="card hover-lift border-0 shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h2 class="card-title mb-0"><i class="bi bi-hand-thumbs-up me-2"></i>Request Donation</h2>
+                </div>
                 <div class="card-body">
-                    <h2 class="card-title mb-3">Request Donation</h2>
-                    <p class="mb-4">You are requesting <strong>{{ donation.get_food_type_display }}</strong> from <strong>{{ donation.donor.username }}</strong>.</p>
+                    <p class="mb-4">
+                        You are requesting <strong>{{ donation.get_food_type_display }}</strong>
+                        from <strong>{{ donation.donor.username }}</strong>.
+                    </p>
 
-                    <form method="post">
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Note:</strong> Please be respectful and concise in your message to the donor.
+                    </div>
+
+                    <form method="post" novalidate>
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <label for="message" class="form-label">Message to Donor (optional)</label>
-                            <textarea id="message" name="message" class="form-control" rows="4"></textarea>
+
+                        <!-- Donation Details -->
+                        <div class="mb-4">
+                            <h6><i class="bi bi-info-circle me-2"></i>Donation Details</h6>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Food Type:</small>
+                                        <div class="fw-medium">{{ donation.get_food_type_display }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Quantity:</small>
+                                        <div class="fw-medium">{{ donation.quantity }} {{ donation.quantity_unit }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Location:</small>
+                                        <div class="fw-medium">{{ donation.pickup_location }}</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-2">
+                                        <small class="text-muted">Expires:</small>
+                                        <div class="fw-medium text-{% if donation.days_until_expiry < 1 %}danger{% elif donation.days_until_expiry < 2 %}warning{% else %}success{% endif %}">
+                                            {{ donation.days_until_expiry }} day(s)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" class="btn btn-success">Submit Request</button>
-                        <a href="{% url 'recipients:donation_detail' donation.pk %}" class="btn btn-link">Back to Details</a>
+
+                        {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endif %}
+
+                        <div class="mb-4">
+                            <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">
+                                Message to Donor <span class="text-muted">(Optional)</span>
+                            </label>
+                            {{ form.message }}
+                            {% if form.message.help_text %}
+                            <small class="form-text text-muted">{{ form.message.help_text }}</small>
+                            {% endif %}
+                            {% for error in form.message.errors %}
+                            <div class="invalid-feedback d-block">{{ error }}</div>
+                            {% endfor %}
+                            <div class="char-counter mt-2">
+                                <small>Characters remaining: <span class="counter-value">500</span></small>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'recipients:donation_detail' donation.pk %}"
+                               class="btn btn-outline-secondary me-2">
+                                <i class="bi bi-x-lg me-2"></i>Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="bi bi-check-circle me-2"></i>Send Request
+                            </button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Character counter for message textarea
+        const messageTextarea = document.getElementById('id_message');
+        if (messageTextarea) {
+            const counter = document.createElement('div');
+            counter.className = 'char-counter mt-2';
+            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
+                               (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
+            messageTextarea.parentNode.appendChild(counter);
+
+            const updateCounter = () => {
+                const maxLength = messageTextarea.getAttribute('maxlength') || 500;
+                const remaining = maxLength - messageTextarea.value.length;
+                counter.querySelector('.counter-value').textContent = remaining;
+                if (remaining < 10) {
+                    counter.querySelector('.counter-value').classList.add('text-danger');
+                } else {
+                    counter.querySelector('.counter-value').classList.remove('text-danger');
+                }
+            };
+
+            messageTextarea.addEventListener('input', updateCounter);
+            messageTextarea.addEventListener('paste', () => {
+                setTimeout(updateCounter, 0);
+            });
+            updateCounter(); // Initial call
+        }
+
+        // Form validation styling
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
+
+                    // Add invalid class to fields
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    inputs.forEach(input => {
+                        if (!input.checkValidity()) {
+                            input.classList.add('is-invalid');
+                            // Add shake animation
+                            input.animate([
+                                { transform: 'translateX(0)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(0)' }
+                            ], {
+                                duration: 300,
+                                iterations: 1
+                            });
+                        } else {
+                            input.classList.remove('is-invalid');
+                            input.classList.add('is-valid');
+                        }
+                    });
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('is-invalid');
+                        this.classList.add('is-valid');
+                    } else {
+                        this.classList.remove('is-valid');
+                        this.classList.add('is-invalid');
+                    }
+                });
+            });
+        });
+    });
+</script>
 {% endblock %}

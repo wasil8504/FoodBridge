@@ -4,26 +4,184 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="mb-4">Available Donations</h1>
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-6 fw-bold mb-2">
+                <i class="bi bi-box-seam me-2"></i>Available Donations
+            </h1>
+            <p class="lead text-muted">
+                Browse surplus food donations available in your area.
+                <span class="ms-2">
+                    {% if donations %}{{ donations|length }} donation(s) available{% else %}No donations currently available{% endif %}
+                </span>
+            </p>
+        </div>
+    </div>
+
     {% if donations %}
-        <div class="row g-4">
-            {% for donation in donations %}
-                <div class="col-md-6">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ donation.get_food_type_display }}</h5>
-                            <p class="card-text">{{ donation.description|truncatewords:25 }}</p>
-                            <p class="mb-1"><strong>Quantity:</strong> {{ donation.quantity }} {{ donation.quantity_unit }}</p>
-                            <p class="mb-1"><strong>Location:</strong> {{ donation.pickup_location }}</p>
-                            <p class="mb-1"><strong>Pickup Window:</strong> {{ donation.pickup_window_start|date:"M d, Y H:i" }} - {{ donation.pickup_window_end|date:"M d, Y H:i" }}</p>
-                            <a href="{% url 'recipients:donation_detail' donation.pk %}" class="btn btn-primary">View Details</a>
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" placeholder="Search donations..." id="donationSearch">
+            </div>
+        </div>
+        <div class="col-md-6 text-md-end">
+            <a href="{% url 'recipients:my_requests' %}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-list-check me-2"></i>My Requests
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4" id="donationCards">
+        {% for donation in donations %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card hover-lift border-0 shadow-sm h-100">
+                {% if donation.days_until_expiry < 1 %}
+                <div class="position-absolute top-0 start-0 badge bg-danger px-2 py-1 py-1 small">
+                    Expiring Soon
+                </div>
+                {% elif donation.days_until_expiry < 2 %}
+                <div class="position-absolute top-0 start-0 badge bg-warning px-2 py-1 small">
+                    Expiring Today
+                </div>
+                {% endif %}
+
+                <div class="card-body d-flex flex-column">
+                    <div class="mb-3">
+                        <span class="badge bg-{% if donation.days_until_expiry < 1 %}danger{% elif donation.days_until_expiry < 2 %}warning{% else %}success{% endif %} rounded-pill">
+                            {{ donation.days_until_expiry }}d left
+                        </span>
+                    </div>
+
+                    <h5 class="card-title h5 mb-3">{{ donation.get_food_type_display }}</h5>
+
+                    <p class="card-text flex-grow-1">{{ donation.description|truncatewords:30 }}</p>
+
+                    <div class="mt-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="bi bi-box me-1"></i> Quantity:</span>
+                            <strong>{{ donation.quantity }} {{ donation.quantity_unit }}</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="bi bi-geo-alt me-1"></i> Location:</span>
+                            <span title="{{ donation.pickup_location }}">{{ donation.pickup_location|truncatewords:3 }}</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span><i class="bi bi-clock me-1"></i> Pickup Window:</span>
+                            <small>
+                                {{ donation.pickup_window_start|date:"M d, H:i" }} -
+                                {{ donation.pickup_window_end|date:"M d, H:i" }}
+                            </small>
                         </div>
                     </div>
+
+                    <div class="mt-auto">
+                        <a href="{% url 'recipients:donation_detail' donation.pk %}"
+                           class="btn btn-primary w-100">
+                            <i class="bi bi-eye me-2"></i>Request Donation
+                        </a>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
         </div>
+        {% endfor %}
+    </div>
+
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&laquo;</span>
+            </li>
+            {% endif %}
+
+            {% for num in paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <span class="page-link" aria-hidden="true">&raquo;</span>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
     {% else %}
-        <p>No donations are available at the moment.</p>
+    <div class="text-center py-5">
+        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
+        <h5 class="text-muted mb-3">No donations available at the moment.</h5>
+        <p class="text-muted">
+            Check back later or consider becoming a donor to help those in need.
+        </p>
+        <div class="mt-4">
+            <a href="{% url 'accounts:register_donor' %}" class="btn btn-outline-primary me-2">
+                <i class="bi bi-plus-circle me-2"></i>Become a Donor
+            </a>
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login to Request
+            </a>
+        </div>
+    </div>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.getElementById('donationSearch');
+        const donationCards = document.querySelectorAll('#donationCards > .col-md-6, #donationCards > .col-lg-4');
+
+        if (searchInput && donationCards.length > 0) {
+            searchInput.addEventListener('input', function() {
+                const filter = this.value.toLowerCase().trim();
+
+                donationCards.forEach(card => {
+                    const foodType = card.querySelector('.card-title').textContent.toLowerCase();
+                    const description = card.querySelector('.card-text').textContent.toLowerCase();
+                    const location = card.querySelector('small[title]').textContent.toLowerCase();
+
+                    if (foodType.includes(filter) || description.includes(filter) || location.includes(filter)) {
+                        card.parentElement.style.display = '';
+                    } else {
+                        card.parentElement.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Add hover lift effect to cards
+        const cards = document.querySelectorAll('.card.hover-lift');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-4px)';
+                this.style.boxShadow = '0 12px 16px -4px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+            });
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)';
+            });
+        });
+    });
+</script>
 {% endblock %}
