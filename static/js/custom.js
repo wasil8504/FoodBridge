@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // Add click-to-select functionality for tables with checkboxes
-        if (this.closest('.table-selectable')) {
+        if (row.closest('.table-selectable')) {
             row.style.cursor = 'pointer';
             row.addEventListener('click', function(e) {
                 // Skip if clicking on a button, link, or input
@@ -334,10 +334,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', () => {
         // Throttle the scroll event
-        window.requestAnimationFrame(toggleBackToTopButton);
+        window.requestAnimationFrame(throttle(toggleBackToTopButton, 100));
     });
     // Initial check
-    throttle(toggleBackToTopButton, 100)();
+    toggleBackToTopButton();
 
     // Add animation to elements as they enter viewport
     const animateElements = document.querySelectorAll('.animate-on-scroll');
@@ -372,7 +372,18 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Utility function for throttling
-function funcWait(func, wait) {
+function throttle(func, wait) {
+    let timeout;
+    return function() {
+        const context = this;
+        const args = arguments;
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(context, args), wait);
+    };
+}
+
+// Utility function for debouncing
+function debounce(func, wait) {
     let timeout;
     return function() {
         const context = this;
