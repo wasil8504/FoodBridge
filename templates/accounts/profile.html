@@ -3,94 +3,128 @@
 {% block title %}Account Profile - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-6 fw-bold mb-2">
-                <i class="bi bi-person me-2"></i>Your Profile
-            </h1>
-            <p class="lead text-muted">
-                View and manage your account information.
-            </p>
-        </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold flex items-center gap-3">
+            <i class="bi bi-person text-primary-600"></i>Your Profile
+        </h1>
+        <p class="text-gray-600 mt-2">
+            View and manage your account information.
+        </p>
     </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card hover-lift border-0 shadow-sm">
-                <div class="card-header border-0">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0"><i class="bi bi-person-circle me-2"></i>Account Information</h5>
-                        <a href="{% url 'accounts:logout' %}" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-box-arrow-right me-1"></i>Logout
-                        </a>
-                    </div>
+    <div class="grid gap-6 md:grid-cols-2">
+        <!-- Account Information -->
+        <div class="col-span-1 md:col-span-1">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-xl font-semibold p-4">
+                        <i class="bi bi-person-circle text-primary-600 mr-2"></i>Account Information
+                    </h2>
                 </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Username</label>
-                                <p class="form-control-plaintext fw-medium">{{ user.username }}</p>
-                            </div>
+                <div class="card-body p-6 space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-person text-primary-600 mt-1"></i>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <p class="form-control-plaintext fw-medium">{{ user.email }}</p>
-                            </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Username</h3>
+                            <p class="text-gray-600">{{ user.username }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Role</label>
-                                <span class="badge bg-{% if user.role == 'admin' %}primary{% elif user.role == 'donor' %}success{% elif user.role == 'recipient' %}info{% else %}secondary{% endif %}">
-                                    {{ user.role|capfirst }}
-                                </span>
-                            </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-envelope text-primary-600 mt-1"></i>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Phone Number</label>
-                                <p class="form-control-plaintext fw-medium">{{ user.phone_number|default:"Not provided" }}</p>
-                            </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Email</h3>
+                            <p class="text-gray-600">{{ user.email }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Address</label>
-                                <p class="form-control-plaintext fw-medium">{{ user.address|default:"Not provided" }}</p>
-                            </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-person-badge text-primary-600 mt-1"></i>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label">Date Joined</label>
-                                <p class="form-control-plaintext fw-medium">{{ user.date_joined|date:"M d, Y" }}</p>
-                            </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Role</h3>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if user.role == 'admin' %}bg-blue-50 text-blue-800
+                                    {% elif user.role == 'donor' %}bg-green-50 text-green-800
+                                    {% elif user.role == 'recipient' %}bg-indigo-50 text-indigo-800
+                                    {% else %}bg-gray-50 text-gray-800{% endif %}">
+                                {{ user.role|capfirst }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-telephone text-primary-600 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Phone Number</h3>
+                            <p class="text-gray-600">{{ user.phone_number|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-globe text-primary-600 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Address</h3>
+                            <p class="text-gray-600">{{ user.address|default:"Not provided" }}</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-calendar text-primary-600 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Date Joined</h3>
+                            <p class="text-gray-600">{{ user.date_joined|date:"M d, Y" }}</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Profile Actions -->
-    <div class="row mt-4">
-        {% if user.role == 'donor' %}
-        <div class="col-md-6">
-            <a href="{% url 'donors:profile' %}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-pencil me-2"></i>Edit Donor Profile
-            </a>
-        </div>
-        {% elif user.role == 'recipient' %}
-        <div class="col-md-6">
-            <a href="{% url 'recipients:profile' %}" class="btn btn-outline-primary w-100">
-                <i class="bi bi-pencil me-2"></i>Edit Recipient Profile
-            </a>
-        </div>
-        {% endif %}
-        <div class="col-md-6">
-            <a href="{% url 'website:home' %}" class="btn btn-outline-secondary w-100">
-                <i class="bi bi-house-door me-2"></i>Back to Home
-            </a>
+        <!-- Profile Actions -->
+        <div class="col-span-1 md:col-span-1">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-xl font-semibold p-4">
+                        <i class="bi bi-gear text-primary-600 mr-2"></i>Profile Actions
+                    </h2>
+                </div>
+                <div class="card-body p-6 space-y-4">
+                    {% if user.role == 'donor' %}
+                    <a href="{% url 'donors:profile' %}"
+                       class="w-full btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-pencil"></i>Edit Donor Profile
+                    </a>
+                    {% elif user.role == 'recipient' %}
+                    <a href="{% url 'recipients:profile' %}"
+                       class="w-full btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-pencil"></i>Edit Recipient Profile
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'website:home' %}"
+                       class="w-full btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-house-door"></i>Back to Home
+                    </a>
+                    <form action="{% url 'accounts:logout' %}" method="post" class="w-full mt-4">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="w-full btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                            <i class="bi bi-box-arrow-right"></i>Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 </div>

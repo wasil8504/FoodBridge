@@ -4,14 +4,14 @@
 
 {% block content %}
 <div class="container">
-    <div class="row mb-4">
+    <div class="mb-4">
         <div class="col-12">
-            <h1 class="display-6 fw-bold mb-2">
+            <h1 class="text-2xl font-bold mb-2">
                 <i class="bi bi-list-check me-2"></i>My Donation Requests
             </h1>
             <p class="lead text-muted">
                 Track the status of your donation requests.
-                <span class="ms-2">
+                <span class="ms-2 inline-block">
                     {% if requests %}{{ requests|length }} request(s) active{% else %}No requests yet{% endif %}
                 </span>
             </p>
@@ -19,58 +19,67 @@
     </div>
 
     {% if requests %}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search requests..." id="requestSearch">
+    <div class="mb-4">
+        <div class="flex justify-between items-center mb-4">
+            <div class="relative">
+                <div class="flex items-center gap-2">
+                    <span class="text-gray-500"><i class="bi bi-search"></i></span>
+                    <input type="text" class="w-full px-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500" placeholder="Search requests..." id="requestSearch">
+                </div>
             </div>
-        </div>
-        <div class="col-md-6 text-md-end">
-            <a href="{% url 'recipients:donation_list' %}" class="btn btn-outline-primary">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Browse Available Donations
-            </a>
+            <div class="text-md-end">
+                <a href="{% url 'recipients:donation_list' %}" class="btn-outline-primary">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Browse Available Donations
+                </a>
+            </div>
         </div>
     </div>
 
-    <div class="list-group" id="requestsList">
+    <div id="requestsList" class="space-y-3">
         {% for request in requests %}
-        <div class="list-group-item list-group-item-action hover-lift border-0">
-            <div class="d-flex w-100 justify-content-between align-items-start">
-                <div class="ms-2 me-auto">
+        <div class="border rounded-lg p-4 hover-lift transition-all cursor-pointer hover:bg-gray-50">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
                     <div class="fw-bold">{{ request.donation.get_food_type_display }}</div>
                     <small class="text-muted">Requested: {{ request.requested_at|date:"M d, Y H:i" }}</small>
                 </div>
                 <div>
-                    <span class="badge bg-{% if request.status == 'pending' %}warning{% elif request.status == 'approved' %}success{% elif request.status == 'rejected' %}danger{% elif request.status == 'completed' %}info{% else %}secondary{% endif %}">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if request.status == 'pending' %}bg-yellow-50 text-yellow-800
+                            {% elif request.status == 'approved' %}bg-green-50 text-green-800
+                            {% elif request.status == 'rejected' %}bg-red-50 text-red-800
+                            {% elif request.status == 'completed' %}bg-blue-50 text-blue-800
+                            {% else %}bg-gray-50 text-gray-800{% endif %}">
                         {{ request.get_status_display }}
                     </span>
                 </div>
             </div>
             <p class="mb-1 mt-2">{{ request.donation.description|truncatewords:25 }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-2">
+            <div class="flex justify-between items-center mt-2">
                 <div>
                     <strong>{{ request.donation.quantity }}</strong> {{ request.donation.quantity_unit }}
                 </div>
                 <div>
-                    <a href="{% url 'recipients:donation_detail' request.donation.pk %}"
-                       class="btn btn-sm btn-outline-primary">
-                        <i class="bi bi-eye me-1"></i>View Donation
-                    </a>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                            {% if request.donation.days_until_expiry < 1 %}bg-red-50 text-red-800
+                            {% elif request.donation.days_until_expiry < 2 %}bg-yellow-50 text-yellow-800
+                            {% else %}bg-green-50 text-green-800{% endif %}">
+                        {{ request.donation.days_until_expiry }}d left
+                    </span>
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-5">
-        <i class="bi bi-list-task fs-1 text-muted mb-4"></i>
+    <div class="text-center py-8">
+        <i class="bi bi-list-task text-4xl text-gray-400 mb-4"></i>
         <h5 class="text-muted mb-3">You haven't requested any donations yet.</h5>
         <p class="text-muted">
             Start by browsing available donations and requesting those that match your needs.
         </p>
-        <a href="{% url 'recipients:donation_list' %}" class="btn btn-primary btn-lg mt-3">
-            <i class="bi bi-box-seam me-2"></i>Find Donations to Request
+        <a href="{% url 'recipients:donation_list' %}" class="btn-outline-primary">
+            <i class="bi bi-box-arrow-in-right me-2"></i>Browse Available Donations
         </a>
     </div>
     {% endif %}
@@ -79,39 +88,39 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Search functionality
-        const searchInput = document.getElementById('requestSearch');
-        const requestItems = document.querySelectorAll('#requestsList .list-group-item');
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('requestSearch');
+    const requestItems = document.querySelectorAll('#requestsList .border');
 
-        if (searchInput && requestItems.length > 0) {
-            searchInput.addEventListener('input', function() {
-                const filter = this.value.toLowerCase().trim();
+    if (searchInput && requestItems.length > 0) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase().trim();
 
-                requestItems.forEach(item => {
-                    const foodType = item.querySelector('.fw-bold').textContent.toLowerCase();
-                    const description = item.querySelector('p.mb-1').textContent.toLowerCase();
-                    const status = item.querySelector('.badge').textContent.toLowerCase();
+            requestItems.forEach(item => {
+                const foodType = item.querySelector('.fw-bold').textContent.toLowerCase();
+                const description = item.querySelector('p.mb-1').textContent.toLowerCase();
+                const status = item.querySelector('.inline-flex').textContent.toLowerCase();
 
-                    if (foodType.includes(filter) || description.includes(filter) || status.includes(filter)) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        // Add hover lift effect to list items
-        const items = document.querySelectorAll('#requestsList .list-group-item-action');
-        items.forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
-            });
-            item.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = '';
+                if (foodType.includes(filter) || description.includes(filter) || status.includes(filter)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
             });
         });
+    }
+
+    // Add hover lift effect to list items
+    const items = document.querySelectorAll('#requestsList .border');
+    items.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
+        });
+        item.addEventListener('mouseleave', function() {
+            this.style.backgroundColor = '';
+        });
     });
+});
 </script>
 {% endblock %}

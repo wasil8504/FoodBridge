@@ -3,83 +3,105 @@
 {% block title %}Available Donations - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-6 fw-bold mb-2">
-                <i class="bi bi-box-seam me-2"></i>Available Donations
-            </h1>
-            <p class="lead text-muted">
-                Browse surplus food donations available in your area.
-                <span class="ms-2">
-                    {% if donations %}{{ donations|length }} donation(s) available{% else %}No donations currently available{% endif %}
-                </span>
-            </p>
-        </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold flex items-center gap-3">
+            <i class="bi bi-box-seam text-primary-600"></i>Available Donations
+        </h1>
+        <p class="text-gray-600 mt-2 max-w-xl">
+            Browse surplus food donations available in your area.
+            <span class="ml-2 inline-block">
+                {% if donations %}<span class="font-medium">{{ donations|length }}</span> donation(s) available{% else %}No donations currently available{% endif %}
+            </span>
+        </p>
     </div>
 
     {% if donations %}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search donations..." id="donationSearch">
+    <div class="mb-6 flex justify-between items-center">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="bi bi-search text-gray-400"></i>
             </div>
+            <input type="text" id="donationSearch"
+                   class="block w-full pl-10 pr-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder-gray-400"
+                   placeholder="Search donations...">
         </div>
-        <div class="col-md-6 text-md-end">
-            <a href="{% url 'recipients:my_requests' %}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-list-check me-2"></i>My Requests
+        <div>
+            <a href="{% url 'recipients:my_requests' %}"
+               class="btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="bi bi-list-check"></i>My Requests
             </a>
         </div>
     </div>
 
-    <div class="row g-4" id="donationCards">
+    <div id="donationCards" class="grid gap-6">
         {% for donation in donations %}
-        <div class="col-md-6 col-lg-4">
-            <div class="card hover-lift border-0 shadow-sm h-100">
+        <div class="col-span-1 md:col-span-2 lg:col-span-4">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all group">
                 {% if donation.days_until_expiry < 1 %}
-                <div class="position-absolute top-0 start-0 badge bg-danger px-2 py-1 py-1 small">
+                <div class="absolute -top-2 left-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                     Expiring Soon
                 </div>
                 {% elif donation.days_until_expiry < 2 %}
-                <div class="position-absolute top-0 start-0 badge bg-warning px-2 py-1 small">
+                <div class="absolute -top-2 left-2 bg-yellow-500 text-white text-xs rounded-full px-2 py-1">
                     Expiring Today
                 </div>
                 {% endif %}
 
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-3">
-                        <span class="badge bg-{% if donation.days_until_expiry < 1 %}danger{% elif donation.days_until_expiry < 2 %}warning{% else %}success{% endif %} rounded-pill">
-                            {{ donation.days_until_expiry }}d left
-                        </span>
-                    </div>
-
-                    <h5 class="card-title h5 mb-3">{{ donation.get_food_type_display }}</h5>
-
-                    <p class="card-text flex-grow-1">{{ donation.description|truncatewords:30 }}</p>
-
-                    <div class="mt-3">
-                        <div class="d-flex justify-content-between mb-2">
-                            <span><i class="bi bi-box me-1"></i> Quantity:</span>
-                            <strong>{{ donation.quantity }} {{ donation.quantity_unit }}</strong>
+                <div class="p-6 space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if donation.days_until_expiry < 1 %}bg-red-50 text-red-800
+                                    {% elif donation.days_until_expiry < 2 %}bg-yellow-50 text-yellow-800
+                                    {% else %}bg-green-50 text-green-800{% endif %}">
+                                {{ donation.days_until_expiry }}d left
+                            </span>
                         </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span><i class="bi bi-geo-alt me-1"></i> Location:</span>
-                            <span title="{{ donation.pickup_location }}">{{ donation.pickup_location|truncatewords:3 }}</span>
-                        </div>
-                        <div class="d-flex justify-content-between mb-2">
-                            <span><i class="bi bi-clock me-1"></i> Pickup Window:</span>
-                            <small>
-                                {{ donation.pickup_window_start|date:"M d, H:i" }} -
-                                {{ donation.pickup_window_end|date:"M d, H:i" }}
-                            </small>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">{{ donation.get_food_type_display }}</h3>
                         </div>
                     </div>
 
-                    <div class="mt-auto">
+                    <p class="text-gray-600 line-clamp-4">{{ description|truncatewords:30 }}</p>
+
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div class="flex items-start space-x-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-box text-primary-600 mt-1"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-500">Quantity:</span>
+                                <p class="text-gray-800 font-medium">{{ donation.quantity }} {{ donation.quantity_unit }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-geo-alt text-primary-600 mt-1"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-500">Location:</span>
+                                <p class="text-gray-800 break-all">{{ pickup_location }}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-clock text-primary-600 mt-1"></i>
+                            </div>
+                            <div>
+                                <span class="text-sm font-medium text-gray-500">Pickup Window:</span>
+                                <p class="text-gray-800">
+                                    {{ pickup_window_start|date:"M d, H:i" }} -
+                                    {{ pickup_window_end|date:"M d, H:i" }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
                         <a href="{% url 'recipients:donation_detail' donation.pk %}"
-                           class="btn btn-primary w-100">
-                            <i class="bi bi-eye me-2"></i>Request Donation
+                           class="w-full btn-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                            <i class="bi bi-eye"></i>Request Donation
                         </a>
                     </div>
                 </div>
@@ -88,56 +110,21 @@
         {% endfor %}
     </div>
 
-    {% if is_paginated %}
-    <nav aria-label="Page navigation" class="mt-4">
-        <ul class="pagination justify-content-center">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link" aria-hidden="true">&laquo;</span>
-            </li>
-            {% endif %}
-
-            {% for num in paginator.page_range %}
-                {% if page_obj.number == num %}
-                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                {% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link" aria-hidden="true">&raquo;</span>
-            </li>
-            {% endif %}
-        </ul>
-    </nav>
-    {% endif %}
     {% else %}
-    <div class="text-center py-5">
-        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
-        <h5 class="text-muted mb-3">No donations available at the moment.</h5>
-        <p class="text-muted">
+    <div class="text-center py-12">
+        <i class="bi bi-inbox text-4xl text-gray-400 mb-4"></i>
+        <h5 class="text-gray-500 mb-3">No donations available at the moment.</h5>
+        <p class="text-gray-500 mb-6">
             Check back later or consider becoming a donor to help those in need.
         </p>
-        <div class="mt-4">
-            <a href="{% url 'accounts:register_donor' %}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-plus-circle me-2"></i>Become a Donor
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'accounts:register_donor' %}"
+               class="btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="bi bi-plus-circle"></i>Become a Doner
             </a>
-            <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary">
-                <i class="bi bi-box-arrow-in-right me-2"></i>Login to Request
+            <a href="{% url 'accounts:login' %}"
+               class="btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="bi bi-box-arrow-in-right"></i>Login to Request
             </a>
         </div>
     </div>
@@ -150,28 +137,44 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Search functionality
         const searchInput = document.getElementById('donationSearch');
-        const donationCards = document.querySelectorAll('#donationCards > .col-md-6, #donationCards > .col-lg-4');
+        const donationCards = document.querySelectorAll('#donationCards > .col-span-1');
 
         if (searchInput && donationCards.length > 0) {
             searchInput.addEventListener('input', function() {
                 const filter = this.value.toLowerCase().trim();
+                let visibleCount = 0;
 
                 donationCards.forEach(card => {
-                    const foodType = card.querySelector('.card-title').textContent.toLowerCase();
-                    const description = card.querySelector('.card-text').textContent.toLowerCase();
-                    const location = card.querySelector('small[title]').textContent.toLowerCase();
+                    const foodType = card.querySelector('h3').textContent.toLowerCase();
+                    const description = card.querySelector('p.text-gray-600').textContent.toLowerCase();
+                    const location = card.querySelector('p.text-gray-800.break-all').textContent.toLowerCase();
 
                     if (foodType.includes(filter) || description.includes(filter) || location.includes(filter)) {
-                        card.parentElement.style.display = '';
+                        card.style.display = '';
+                        visibleCount++;
                     } else {
-                        card.parentElement.style.display = 'none';
+                        card.style.display = 'none';
                     }
                 });
+
+                // Show/hide "no results" message
+                const noResults = document.querySelector('[data-no-results]');
+                if (!filter && visibleCount === 0 && !noResults) {
+                    // Add no results message
+                    const message = document.createElement('div');
+                    message.setAttribute('data-no-results', 'true');
+                    message.className = 'col-span-1 text-center py-8';
+                    message.innerHTML = '<i class="bi bi-search text-4xl text-gray-400 mb-4"></i><p class="text-gray-500">No donations match your search.</p>';
+                    document.getElementById('donationCards').appendChild(message);
+                } else if ((filter || visibleCount > 0) && noResults) {
+                    // Remove no results message
+                    noResults.remove();
+                }
             });
         }
 
         // Add hover lift effect to cards
-        const cards = document.querySelectorAll('.card.hover-lift');
+        const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             card.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-4px)';

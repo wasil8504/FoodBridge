@@ -3,182 +3,181 @@
 {% block title %}Create Donation - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card hover-lift border-0 shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h2 class="card-title mb-0"><i class="bi bi-plus-circle me-2"></i>Create Donation Listing</h2>
-                </div>
-                <div class="card-body">
-                    <form method="post" enctype="multipart/form-data" novalidate>
-                        {% csrf_token %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-3xl mx-auto">
+        <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+            <div class="card-header bg-primary/90 text-white">
+                <h2 class="card-title mb-0 flex items-center gap-3">
+                    <i class="bi bi-plus-circle text-white"></i>Create Donation Listing
+                </h2>
+            </div>
+            <div class="card-body p-6">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
 
-                        <!-- Form Header -->
-                        <div class="mb-4">
-                            <p class="text-muted">
-                                Help reduce food waste by listing your surplus food donations.
-                                All donations are matched with verified recipients in your area.
-                            </p>
-                        </div>
+                    <!-- Form Header -->
+                    <div class="mb-6">
+                        <p class="text-gray-600 mb-4">
+                            Help reduce food waste by listing your surplus food donations.
+                            All donations are matched with verified recipients in your area.
+                        </p>
+                    </div>
 
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
+                    {% if form.non_field_errors %}
+                    <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                        <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <!-- Food Type -->
+                        <div>
+                            <label for="{{ form.food_type.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Food Type <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.food_type }}
+                            {% if form.food_type.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.food_type.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.food_type.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
                             {% endfor %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                        {% endif %}
 
-                        <div class="row g-4">
-                            <!-- Food Type -->
-                            <div class="col-md-6">
-                                <label for="{{ form.food_type.id_for_label }}" class="form-label fw-medium">
-                                    Food Type <span class="text-danger">*</span>
-                                </label>
-                                {{ form.food_type }}
-                                {% if form.food_type.help_text %}
-                                <small class="form-text text-muted">{{ form.food_type.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.food_type.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
+                        <!-- Quantity -->
+                        <div>
+                            <label for="{{ form.quantity.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Quantity <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                {{ form.quantity }}
+                                <span class="text-gray-500">{{ form.quantity_unit.label_tag }}</span>
+                                {{ form.quantity_unit }}
                             </div>
+                            {% if form.quantity.help_text or form.quantity_unit.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">
+                                {% if form.quantity.help_text %}{{ form.quantity.help_text }}{% endif %}
+                                {% if form.quantity_unit.help_text %}{{ form.quantity_unit.help_text }}{% endif %}
+                            </p>
+                            {% endif %}
+                            {% for error in form.quantity.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                            {% for error in form.quantity_unit.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
 
-                            <!-- Quantity -->
-                            <div class="col-md-6">
-                                <label for="{{ form.quantity.id_for_label }}" class="form-label fw-medium">
-                                    Quantity <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text">{{ form.quantity.label_tag }}</span>
-                                    {{ form.quantity }}
-                                    <span class="input-group-text">{{ form.quantity_unit.label_tag }}</span>
-                                    {{ form.quantity_unit }}
-                                </div>
-                                {% if form.quantity.help_text or form.quantity_unit.help_text %}
-                                <small class="form-text text-muted">
-                                    {% if form.quantity.help_text %}{{ form.quantity.help_text }}{% endif %}
-                                    {% if form.quantity_unit.help_text %}{{ form.quantity_unit.help_text }}{% endif %}
-                                </small>
-                                {% endif %}
-                                {% for error in form.quantity.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                                {% for error in form.quantity_unit.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Description -->
-                            <div class="col-12">
-                                <label for="{{ form.description.id_for_label }}" class="form-label fw-medium">
-                                    Description <span class="text-muted">(Optional)</span>
-                                </label>
-                                {{ form.description }}
-                                {% if form.description.help_text %}
-                                <small class="form-text text-muted">{{ form.description.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.description.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                                <div class="char-counter mb-2">
-                                    <small>Characters remaining: <span class="counter-value">500</span></small>
-                                </div>
-                            </div>
-
-                            <!-- Expiry Date -->
-                            <div class="col-md-6">
-                                <label for="{{ form.expiry_date.id_for_label }}" class="form-label fw-medium">
-                                    Expiry Date <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
-                                    {{ form.expiry_date }}
-                                </div>
-                                {% if form.expiry_date.help_text %}
-                                <small class="form-text text-muted">{{ form.expiry_date.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.expiry_date.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Pickup Location -->
-                            <div class="col-md-6">
-                                <label for="{{ form.pickup_location.id_for_label }}" class="form-label fw-medium">
-                                    Pickup Location <span class="text-danger">*</span>
-                                </label>
-                                {{ form.pickup_location }}
-                                {% if form.pickup_location.help_text %}
-                                <small class="form-text text-muted">{{ form.pickup_location.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.pickup_location.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Contact Information -->
-                            <div class="col-12">
-                                <label for="{{ form.contact_person.id_for_label }}" class="form-label fw-medium">
-                                    Contact Person <span class="text-danger">*</span>
-                                </label>
-                                {{ form.contact_person }}
-                                {% if form.contact_person.help_text %}
-                                <small class="form-text text-muted">{{ form.contact_person.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.contact_person.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="col-12">
-                                <label for="{{ form.contact_phone.id_for_label }}" class="form-label fw-medium">
-                                    Contact Phone <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    {{ form.contact_phone }}
-                                </div>
-                                {% if form.contact_phone.help_text %}
-                                <small class="form-text text-muted">{{ form.contact_phone.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.contact_phone.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Special Instructions -->
-                            <div class="col-12">
-                                <label for="{{ form.special_instructions.id_for_label }}" class="form-label fw-medium">
-                                    Special Instructions <span class="text-muted">(Optional)</span>
-                                </label>
-                                {{ form.special_instructions }}
-                                {% if form.special_instructions.help_text %}
-                                <small class="form-text text-muted">{{ form.special_instructions.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.special_instructions.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                                <div class="char-counter mb-2">
-                                    <small>Characters remaining: <span class="counter-value">300</span></small>
-                                </div>
+                        <!-- Description -->
+                        <div class="md:col-span-2">
+                            <label for="{{ form.description.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Description <span class="text-gray-500">(Optional)</span>
+                            </label>
+                            {{ form.description }}
+                            {% if form.description.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.description.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.description.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                            <div class="mt-2 flex justify-between text-sm text-gray-500">
+                                <span>Characters remaining: <span id="desc-counter">500</span></span>
                             </div>
                         </div>
 
-                        <!-- Submit Button -->
-                        <div class="col-12 mt-5">
-                            <button type="submit" class="btn btn-primary btn-lg px-5">
-                                <i class="bi bi-plane me-2"></i>Submit Donation Listing
-                            </button>
-                            <a href="{% url 'donors:dashboard' %}" class="btn btn-outline-secondary btn-lg px-5 ms-3">
-                                <i class="bi bi-x-lg me-2"></i>Cancel
-                            </a>
+                        <!-- Expiry Date -->
+                        <div>
+                            <label for="{{ form.expiry_date.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Expiry Date <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500"><i class="bi bi-calendar-event"></i></span>
+                                {{ form.expiry_date }}
+                            </div>
+                            {% if form.expiry_date.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.expiry_date.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.expiry_date.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
                         </div>
-                    </form>
-                </div>
+
+                        <!-- Pickup Location -->
+                        <div>
+                            <label for="{{ form.pickup_location.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Pickup Location <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.pickup_location }}
+                            {% if form.pickup_location.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.pickup_location.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.pickup_location.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="md:col-span-2">
+                            <label for="{{ form.contact_person.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Contact Person <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.contact_person }}
+                            {% if form.contact_person.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.contact_person.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.contact_person.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <div>
+                            <label for="{{ form.contact_phone.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Contact Phone <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500"><i class="bi bi-telephone"></i></span>
+                                {{ form.contact_phone }}
+                            </div>
+                            {% if form.contact_phone.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.contact_phone.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.contact_phone.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Special Instructions -->
+                        <div class="md:col-span-2">
+                            <label for="{{ form.special_instructions.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Special Instructions <span class="text-gray-500">(Optional)</span>
+                            </label>
+                            {{ form.special_instructions }}
+                            {% if form.special_instructions.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.special_instructions.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.special_instructions.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                            <div class="mt-2 flex justify-between text-sm text-gray-500">
+                                <span>Characters remaining: <span id="instructions-counter">300</span></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-8 flex justify-end gap-4">
+                        <a href="{% url 'donors:dashboard' %}"
+                           class="btn-outline-secondary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center gap-3">
+                            <i class="bi bi-x-lg"></i>Cancel
+                        </a>
+                        <button type="submit" class="btn-primary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center gap-3">
+                            <i class="bi bi-plane"></i>Submit Donation Listing
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -189,71 +188,65 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Character counters for textareas
-        const textareas = document.querySelectorAll('textarea[maxlength]');
-        textareas.forEach(textarea => {
-            const counter = document.createElement('div');
-            counter.className = 'char-counter mt-2';
-            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
-                               textarea.getAttribute('maxlength') + '</span></small>';
-            textarea.parentNode.appendChild(counter);
+        const descriptionTextarea = document.querySelector('#{{ form.description.id_for_label }}');
+        const instructionsTextarea = document.querySelector('#{{ form.special_instructions.id_for_label }}');
 
-            const updateCounter = () => {
-                const remaining = textarea.getAttribute('maxlength') - textarea.value.length;
-                counter.querySelector('.counter-value').textContent = remaining;
+        if (descriptionTextarea) {
+            const descCounter = document.getElementById('desc-counter');
+            const updateDescCounter = () => {
+                const remaining = descriptionTextarea.getAttribute('maxlength') - descriptionTextarea.value.length;
+                descCounter.textContent = remaining;
                 if (remaining < 10) {
-                    counter.querySelector('.counter-value').classList.add('text-danger');
+                    descCounter.classList.add('text-red-500');
                 } else {
-                    counter.querySelector('.counter-value').classList.remove('text-danger');
+                    descCounter.classList.remove('text-red-500');
                 }
             };
 
-            textarea.addEventListener('input', updateCounter);
-            updateCounter(); // Initial call
-        });
+            descriptionTextarea.addEventListener('input', updateDescCounter);
+            updateDescCounter(); // Initial call
+        }
 
-        // Form validation styling
+        if (instructionsTextarea) {
+            const instructionsCounter = document.getElementById('instructions-counter');
+            const updateInstructionsCounter = () => {
+                const remaining = instructionsTextarea.getAttribute('maxlength') - instructionsTextarea.value.length;
+                instructionsCounter.textContent = remaining;
+                if (remaining < 10) {
+                    instructionsCounter.classList.add('text-red-500');
+                } else {
+                    instructionsCounter.classList.remove('text-red-500');
+                }
+            };
+
+            instructionsTextarea.addEventListener('input', updateInstructionsCounter);
+            updateInstructionsCounter(); // Initial call
+        }
+
+        // Form validation styling (using native HTML5 validation with custom styling)
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
             form.addEventListener('submit', function(e) {
-                if (!form.checkValidity()) {
-                    e.preventDefault();
-                    e.preventDefault();
-
-                    // Add invalid class to fields
-                    const inputs = form.querySelectorAll('input, select, textarea');
-                    inputs.forEach(input => {
-                        if (!input.checkValidity()) {
-                            input.classList.add('is-invalid');
-                            // Add shake animation
-                            input.animate([
-                                { transform: 'translateX(0)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(0)' }
-                            ], {
-                                duration: 300,
-                                iterations: 1
-                            });
-                        } else {
-                            input.classList.remove('is-invalid');
-                            input.classList.add('is-valid');
-                        }
-                    });
-                }
+                // Add subtle shake animation to invalid fields
+                const invalidFields = form.querySelectorAll(':invalid');
+                invalidFields.forEach(field => {
+                    field.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        field.classList.remove('animate-pulse');
+                    }, 500);
+                });
             });
 
-            // Real-time validation
+            // Real-time validation styling
             const inputs = form.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 input.addEventListener('input', function() {
                     if (this.checkValidity()) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-green-500');
                     } else {
-                        this.classList.remove('is-valid');
-                        this.classList.add('is-invalid');
+                        this.classList.remove('border-green-500');
+                        this.classList.add('border-red-500');
                     }
                 });
             });

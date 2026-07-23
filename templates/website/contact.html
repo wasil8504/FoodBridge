@@ -3,55 +3,108 @@
 {% block title %}Contact Us{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1>Contact Us</h1>
-            <p class="lead">Have questions? We're here to help.</p>
-        </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-center">Contact Us</h1>
+        <p class="text-lg text-gray-600 text-center mt-2 max-w-xl mx-auto">
+            Have questions? We're here to help.
+        </p>
     </div>
 
-    <div class="row">
-        <div class="col-md-8">
-            <h2>Get in Touch</h2>
-            <form action="{% url 'website:contact' %}" method="post">
-                {% csrf_token %}
-                <div class="mb-3">
-                    <label for="name" class="form-label">Your Name</label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <!-- Contact Form -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-2">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-2xl font-semibold p-6">
+                        <i class="bi bi-envelope text-primary-600 mr-2"></i>Get in Touch
+                    </h2>
                 </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email Address</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                <div class="card-body p-6">
+                    <form action="{% url 'website:contact' %}" method="post" class="space-y-6">
+                        {% csrf_token %}
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">
+                                Your Name
+                            </label>
+                            <input type="text" id="name" name="name"
+                                   class="w-full px-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                   required>
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email Address
+                            </label>
+                            <input type="email" id="email" name="email"
+                                   class="w-full px-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                   required>
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-sm font-medium text-gray-700 mb-2">
+                                Subject
+                            </label>
+                            <input type="text" id="subject" name="subject"
+                                   class="w-full px-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                   required>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 mb-2">
+                                Message
+                            </label>
+                            <textarea id="message" name="message" rows="5"
+                                      class="w-full px-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                                      required></textarea>
+                        </div>
+                        <button type="submit"
+                                class="w-full btn-primary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center justify-center gap-2">
+                            <i class="bi bi-paper-plane"></i>Send Message
+                        </button>
+                    </form>
                 </div>
-                <div class="mb-3">
-                    <label for="subject" class="form-label">Subject</label>
-                    <input type="text" class="form-control" id="subject" name="subject" required>
-                </div>
-                <div class="mb-3">
-                    <label for="message" class="form-label">Message</label>
-                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary">Send Message</button>
-            </form>
+            </div>
         </div>
 
-        <div class="col-md-4">
-            <h2>Our Office</h2>
-            <address>
-                <strong>Food Bridge Headquarters</strong><br>
-                123 Food Street<br>
-                Hope City, HC 12345<br>
-                <abbr title="Phone">P:</abbr> (123) 456-7890
-            </address>
-            <address>
-                <strong>General Inquiries:</strong><br>
-                <a href="mailto:#">info@foodbridge.org</a><br>
-                <strong>Partnerships:</strong><br>
-                <a href="mailto:#">partners@foodbridge.org</a><br>
-                <strong>Press:</strong><br>
-                <a href="mailto:#">press@foodbridge.org</a>
-            </address>
+        <!-- Contact Info -->
+        <div class="col-span-1 md:col-span-1 lg:col-span-1">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-2xl font-semibold p-6">
+                        <i class="bi bi-building text-success-600 mr-2"></i>Our Office
+                    </h2>
+                </div>
+                <div class="card-body p-6 space-y-4">
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-building text-primary-600 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Food Bridge Headquarters</h3>
+                            <p class="text-sm text-gray-600">
+                                123 Food Street<br>
+                                Hope City, HC 12345<br>
+                                <span class="block">P: (123) 456-7890</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start space-x-3">
+                        <div class="flex-shrink-0">
+                            <i class="bi bi-envelope text-primary-600 mt-1"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800">Contact Information</h3>
+                            <p class="text-sm text-gray-600">
+                                <strong>General Inquiries:</strong><br>
+                                <a href="mailto:info@foodbridge.org" class="text-blue-600 hover:underline">info@foodbridge.org</a><br>
+                                <strong>Partnerships:</strong><br>
+                                <a href="mailto:partners@foodbridge.org" class="text-blue-600 hover:underline">partners@foodbridge.org</a><br>
+                                <strong>Press:</strong><br>
+                                <a href="mailto:press@foodbridge.org" class="text-blue-600 hover:underline">press@foodbridge.org</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

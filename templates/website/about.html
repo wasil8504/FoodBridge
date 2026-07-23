@@ -3,56 +3,102 @@
 {% block title %}About Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1>About Food Bridge</h1>
-            <p class="lead">Our mission is to bridge the gap between food surplus and those in need.</p>
-        </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-center">About Food Bridge</h1>
+        <p class="text-lg text-gray-600 text-center mt-2 max-w-xl mx-auto">
+            Our mission is to bridge the gap between food surplus and those in need.
+        </p>
     </div>
 
-    <div class="row mb-5">
-        <div class="col-md-8">
-            <h2>Our Story</h2>
-            <p>Food Bridge was founded with a simple vision: no food should go to waste when there are people in our communities who are hungry. We connect restaurants, grocery stores, event organizers, and individuals with surplus food to verified shelters, food banks, and community kitchens.</p>
-            <p>Our platform streamlines the donation process, making it easy for donors to share their surplus and for recipients to find and claim donations that match their needs.</p>
-        </div>
-        <div class="col-md-4">
-            <img src="https://via.placeholder.com/400x300?text=Our+Story+Illustration" alt="Our story illustration" class="img-fluid rounded">
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2>Our Mission</h2>
-            <p>To reduce food waste and fight hunger by creating efficient connections between food donors and recipients through technology and community partnerships.</p>
-        </div>
-    </div>
-
-    <div class="row mb-5">
-        <div class="col-12">
-            <h2>How We Work</h2>
-            <div class="row text-center g-4">
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <i class="bi bi-truck display-4 text-primary"></i>
-                        <h3>Donate</h3>
-                        <p>List your surplus food with just a few clicks.</p>
-                    </div>
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 items-start">
+        <!-- Our Story -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-2">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-2xl font-semibold p-6">
+                        <i class="bi bi-book text-primary-600 mr-2"></i>Our Story
+                    </h2>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <i class="bi bi-shield-check display-4 text-success"></i>
-                        <h3>
-                        <h3>Verify</h3>
-                        <p>We verify recipients to ensure safe and reliable distribution.</p>
-                    </div>
+                <div class="card-body p-6">
+                    <p class="text-gray-600 mb-4">
+                        Food Bridge was founded with a simple vision: no food should go to waste when there are people in our communities who are hungry. We connect restaurants, grocery stores, event organizers, and individuals with surplus food to verified shelters, food banks, and community kitchens.
+                    </p>
+                    <p class="text-gray-600">
+                        Our platform streamlines the donation process, making it easy for donors to share their surplus and for recipients to find and claim donations that match their needs.
+                    </p>
                 </div>
-                <div class="col-md-4">
-                    <div class="feature-box">
-                        <i class="bi bi-heart-pulse display-4 text-danger"></i>
-                        <h3>Impact</h3>
-                        <p>Track the meals donated and the positive change made.</p>
+            </div>
+        </div>
+
+        <!-- Illustration -->
+        <div class="hidden md:block col-span-1 lg:col-span-1">
+            <div class="relative h-64 w-full">
+                <img src="https://via.placeholder.com/400x300?text=Our+Story+Illustration"
+                     alt="Our story illustration"
+                     class="w-full h-full object-cover rounded-xl shadow-lg border border-border/50">
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background/90 to-transparent px-4 py-2 text-sm text-gray-600">
+                    Our story illustration
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Mission -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-2">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-2xl font-semibold p-6">
+                        <i class="bi bi-mission text-success-600 mr-2"></i>Our Mission
+                    </h2>
+                </div>
+                <div class="card-body p-6">
+                    <p class="text-gray-600 mb-4">
+                        To reduce food waste and fight hunger by creating efficient connections between food donors and recipients through technology and community partnerships.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How We Work -->
+        <div class="col-span-1 md:col-span-2 lg:col-span-3">
+            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+                <div class="card-header border-b border-border/20">
+                    <h2 class="text-2xl font-semibold p-6">
+                        <i class="bi bi-gear text-info-600 mr-2"></i>How We Work
+                    </h2>
+                </div>
+                <div class="card-body p-6 grid gap-6 md:grid-cols-3">
+                    <!-- Donate Step -->
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-4xl text-primary-600 mb-2">
+                                <i class="bi bi-truck"></i>
+                            </div>
+                            <h3 class="font-semibold">Donate</h3>
+                            <p class="text-sm text-gray-600">List your surplus food with just a few clicks.</p>
+                        </div>
+                    </div>
+
+                    <!-- Verify Step -->
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-4xl text-success-600 mb-2">
+                                <i class="bi bi-shield-check"></i>
+                            </div>
+                            <h3 class="font-semibold">Verify</h3>
+                            <p class="text-sm text-gray-600">We verify recipients to ensure safe and reliable distribution.</p>
+                        </div>
+                    </div>
+
+                    <!-- Impact Step -->
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                        <div class="flex flex-col items-center mb-4">
+                            <div class="text-4xl text-amber-500 mb-2">
+                                <i class="bi bi-graph-up"></i>
+                            </div>
+                            <h3 class="font-semibold">Impact</h3>
+                            <p class="text-sm text-gray-600">Track the meals donated and the positive change made.</p>
+                        </div>
                     </div>
                 </div>
             </div>

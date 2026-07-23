@@ -1,0 +1,20 @@
+# Normalize line endings to LF in git repo, convert to CRLF on checkout on Windows
+* text=auto eol=lf
+
+# Explicitly declare text files
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.json text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.db binary
+*.sqlite3 binary

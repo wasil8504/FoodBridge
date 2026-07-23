@@ -3,172 +3,183 @@
 {% block title %}My Donations - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-12">
-            <h1 class="display-6 fw-bold mb-2">
-                <i class="bi bi-list-task me-2"></i>My Donations
-            </h1>
-            <p class="lead text-muted">
-                Track and manage all your food donation listings.
-                <span class="ms-2">
-                    {% if donations %}You have {{ donations|length }} active donation(s).{% else %}
-                    You haven't made any donations yet. <a href="{% url 'donors:create_donation' %}" class="text-decoration-none">Create your first donation</a> to get started.
-                    {% endif %}
-                </span>
-            </p>
-        </div>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-6">
+        <h1 class="text-2xl font-bold flex items-center gap-3">
+            <i class="bi bi-list-task text-primary-600"></i>My Donations
+        </h1>
+        <p class="text-gray-600 mt-2 max-w-xl">
+            Track and manage all your food donation listings.
+            <span class="ml-2 inline-block">
+                {% if donations %}You have <span class="font-medium">{{ donations|length }}</span> active donation(s).{% else %}
+                You haven't made any donations yet. <a href="{% url 'donors:create_donation' %}" class="text-primary-600 hover:underline">Create your first donation</a> to get started.
+                {% endif %}
+            </span>
+        </p>
     </div>
 
     {% if donations %}
-    <div class="row mb-4">
-        <div class="col-md-6">
-            <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-search"></i></span>
-                <input type="text" class="form-control" placeholder="Search donations..." id="donationSearch">
+    <div class="mb-6 flex justify-between items-center">
+        <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <i class="bi bi-search text-gray-400"></i>
             </div>
+            <input type="text" id="donationSearch"
+                   class="block w-full pl-10 pr-4 py-3 bg-white/50 border border-border/50 rounded-lg focus:bg-white/75 focus:outline-none focus:ring-2 focus:ring-primary-500 placeholder-gray-400"
+                   placeholder="Search donations...">
         </div>
-        <div class="col-md-6 text-md-end">
-            <a href="{% url 'donors:create_donation' %}" class="btn btn-outline-primary me-2">
-                <i class="bi bi-plus-circle me-2"></i>Create New Donation
+        <div class="flex gap-3">
+            <a href="{% url 'donors:create_donation' %}"
+               class="btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="bi bi-plus-circle"></i>Create New Donation
             </a>
-            <button type="button" class="btn btn-outline-secondary" id="filterButton">
-                <i class="bi bi-funnel me-2"></i>Filter
+            <button type="button" id="filterButton"
+                    class="btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                <i class="bi bi-funnel"></i>Filter
             </button>
         </div>
     </div>
 
     <!-- Stats Summary -->
-    <div class="row g-4 mb-4">
-        <div class="col-md-3">
-            <div class="card text-white bg-primary h-100 hover-lift border-0 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-3 opacity-75">
-                        <i class="bi bi-egg-fried fs-4"></i>
+    <div class="grid gap-6 mb-8 md:grid-cols-2 lg:grid-cols-4">
+        <div class="stat-card bg-primary/10 border-border/20 hover:border-primary hover:bg-primary/5 transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                        <i class="bi bi-egg-fried text-primary-600 text-2xl"></i>
                     </div>
-                    <h5 class="card-title fw-bold">Total Donations</h5>
-                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.total }}</p>
-                    <p class="text-opacity-75 mt-auto small">lifetime</p>
                 </div>
+                <h5 class="font-semibold mb-2 text-gray-800">Total Donations</h5>
+                <p class="text-3xl font-bold text-primary-600">{{ stats.total }}</p>
+                <p class="text-sm text-gray-500 mt-2">lifetime</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-success h-100 hover-lift border-0 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-3 opacity-75">
-                        <i class="bi bi-box-seam fs-4"></i>
+        <div class="stat-card bg-success/10 border-border/20 hover:border-success hover:bg-success/5 transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 bg-success/20 rounded-xl flex items-center justify-center">
+                        <i class="bi bi-box-seam text-success-600 text-2xl"></i>
                     </div>
-                    <h5 class="card-title fw-bold">Available</h5>
-                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.available }}</p>
-                    <p class="text-opacity-75 mt-auto small">ready for pickup</p>
                 </div>
+                <h5 class="font-semibold mb-2 text-gray-800">Available</h5>
+                <p class="text-3xl font-bold text-success-600">{{ stats.available }}</p>
+                <p class="text-sm text-gray-500 mt-2">ready for pickup</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-info h-100 hover-lift border-0 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-3 opacity-75">
-                        <i class="bi bi-arrow-repeat fs-4"></i>
+        <div class="stat-card bg-info/10 border-border/20 hover:border-info hover:bg-info/5 transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 bg-info/20 rounded-xl flex items-center justify-center">
+                        <i class="bi bi-arrow-repeat text-info-600 text-2xl"></i>
                     </div>
-                    <h5 class="card-title fw-bold">Pending</h5>
-                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.pending }}</p>
-                    <p class="text-opacity-75 mt-auto small">awaiting confirmation</p>
                 </div>
+                <h5 class="font-semibold mb-2 text-gray-800">Pending</h5>
+                <p class="text-3xl font-bold text-info-600">{{ stats.paused }}</p>
+                <p class="text-sm text-gray-500 mt-2">awaiting confirmation</p>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card text-white bg-warning h-100 hover-lift border-0 shadow-sm">
-                <div class="card-body d-flex flex-column">
-                    <div class="mb-3 opacity-75">
-                        <i class="bi bi-check-circle fs-4"></i>
+        <div class="stat-card bg-warning/10 border-border/20 hover:border-warning hover:bg-warning/5 transition-all">
+            <div class="p-6">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-12 h-12 bg-warning/20 rounded-xl flex items-center justify-center">
+                        <i class="bi bi-check-circle text-warning-600 text-2xl"></i>
                     </div>
-                    <h5 class="card-title fw-bold">Completed</h5>
-                    <p class="card-text display-4 fw-bold mb-auto">{{ stats.completed }}</p>
-                    <p class="text-opacity-75 mt-auto small">successfully delivered</p>
                 </div>
+                <h5 class="font-semibold mb-2 text-gray-800">Completed</h5>
+                <p class="text-3xl font-bold text-warning-600">{{ stats.completed }}</p>
+                <p class="text-sm text-gray-500 mt-2">successfully delivered</p>
             </div>
         </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-hover align-middle">
-            <thead class="table-light">
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-border/20">
+            <thead class="bg-gray-50">
                 <tr>
-                    <th>Food Type</th>
-                    <th>Quantity</th>
-                    <th>Status</th>
-                    <th>Expiry</th>
-                    <th>Actions</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Food Type</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Expiry</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
             </thead>
-            <tbody id="donationTableBody">
+            <tbody id="donationTableBody" class="divide-y divide-border/20">
                 {% for donation in donations %}
-                <tr data-status="{{ donation.status }}" data-food-type="{{ donation.food_type }}">
-                    <td>
-                        <div class="d-flex align-items-center">
-                            <div class="flex-shrink-0 me-3">
-                                <span class="badge bg-light text-primary rounded-pill fs-6">
-                                    {{ donation.get_food_type_display|slice:"0:1" }}
-                                </span>
-                            </div>
-                            <div>
-                                <div class="fw-medium">{{ donation.get_food_type_display }}</div>
-                                <small class="text-muted">ID: #{{ donation.id }}</small>
-                            </div>
+                <tr class="hover:bg-gray-50" data-status="{{ donation.status }}" data-food-type="{{ donation.food_type }}">
+                    <td class="px-6 py-4 flex items-center space-x-3">
+                        <div class="flex-shrink-0">
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary-600 text-xs font-medium">
+                                {{ donation.get_food_type_display|slice:"0:1" | upper }}
+                            </span>
+                        </div>
+                        <div>
+                            <div class="font-medium text-gray-800">{{ donation.get_food_type_display }}</div>
+                            <div class="text-xs text-gray-500">ID: #{{ donation.id }}</div>
                         </div>
                     </td>
-                    <td>
+                    <td class="px-6 py-4 text-right font-medium whitespace-nowrap">
                         <strong>{{ donation.quantity }}</strong> {{ donation.quantity_unit }}
                     </td>
-                    <td>
-                        <span class="badge badge-pill bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}warning{% elif donation.status == 'matched' %}info{% elif donation.status == 'claimed' %}primary{% elif donation.status == 'picked_up' %}secondary{% elif donation.status == 'completed' %}dark{% else %}secondary{% endif %}"
-                              style="font-size: 0.875rem;">
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if donation.status == 'available' %}bg-green-50 text-green-800
+                                {% elif donation.status == 'pending' %}bg-yellow-50 text-yellow-800
+                                {% elif donation.status == 'matched' %}bg-blue-50 text-blue-800
+                                {% elif donation.status == 'claimed' %}bg-indigo-50 text-indigo-800
+                                {% elif donation.status == 'piked_up' %}bg-gray-50 text-gray-800
+                                {% elif donation.status == 'completed' %}bg-gray-800 text-gray-50
+                                {% else %}bg-gray-50 text-gray-800{% endif %}">
                             {{ donation.get_status_display }}
                         </span>
                     </td>
-                    <td>
-                        {{ donation.expiry_date|date:"M d, Y<br><small class='text-muted'>H:i</small>"|safe }}
+                    <td class="px-6 py-4 text-right whitespace-nowrap">
+                        {{ donation.expiry_date|date:"M d, Y<br><small class='text-muted block'>H:i</small>"|safe }}
                     </td>
-                    <td>
-                        <div class="d-grid gap-2">
-                            <a href="{% url 'donors:donation_detail' donation.pk %}"
-                               class="btn btn-sm btn-outline-primary">
-                                <i class="bi bi-eye me-1"></i>View
-                            </a>
-                            {% if donation.status in 'available,pending' %}
-                            <a href="{% url 'donors:edit_donation' donation.pk %}"
-                               class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-pencil me-1"></i>Edit
-                            </a>
-                            {% endif %}
-                            {% if donation.status == 'available' %}
-                            <button type="button" class="btn btn-sm btn-outline-danger"
-                                    data-bs-toggle="modal" data-bs-target="#cancelModal{{ donation.pk }}">
-                                <i class="bi bi-trash me-1"></i>Cancel
-                            </button>
-                            {% endif %}
-                        </div>
+                    <td class="px-6 py-4 text-right space-x-2">
+                        <a href="{% url 'donors:donation_detail' donation.pk %}"
+                           class="text-primary-600 hover:text-primary-800">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                        {% if donation.status in 'available,pending' %}
+                        <a href="{% url 'donors:edit_donation' donation.pk %}"
+                           class="text-gray-600 hover:text-gray-800">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        {% endif %}
+                        {% if donation.status == 'available' %}
+                        <button type="button"
+                                class="text-gray-600 hover:text-gray-800"
+                                data-toggle="modal" data-target="#cancelModal{{ donation.pk }}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                        {% endif %}
                     </td>
                 </tr>
 
                 <!-- Cancel Modal -->
-                <div class="modal fade" id="cancelModal{{ donation.pk }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ donation.pk }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header bg-danger text-white">
-                                <h5 class="modal-title" id="cancelModalLabel{{ donation.pk }}">Cancel Donation</h5>
-                                <button type="button" class="btn-close btn-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal fixed inset-0 z-50 flex items-center justify-center" id="cancelModal{{ donation.pk }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ donation.pk }}" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog relative w-full max-w-md px-4">
+                        <div class="modal-content bg-white/90 backdrop-blur-sm border border-border/50 rounded-lg shadow-lg relative">
+                            <div class="modal-header pb-4 border-b border-border/50">
+                                <h5 class="modal-title text-2xl font-bold text-primary-600" id="cancelModalLabel{{ donation.pk }}">Cancel Donation</h5>
+                                <button type="button" class="btn-close text-gray-500 hover:text-gray-400" data-dismiss="modal" aria-label="Close">
+                                    <i class="bi bi-x"></i>
+                                </button>
                             </div>
-                            <div class="modal-body">
+                            <div class="modal-body space-y-4">
                                 <p>Are you sure you want to cancel this donation?</p>
                                 <p><strong>{{ donation.get_food_type_display }}</strong> - {{ donation.quantity }} {{ donation.quantity_unit }}</p>
-                                <p class="text-muted">This action cannot be undone.</p>
+                                <p class="mt-4 text-sm text-gray-500">This action cannot be undone.</p>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No, Keep Active</button>
-                                <form action="{% url 'donors:cancel_donation' donation.pk %}" method="post" class="d-inline">
+                            <div class="modal-footer flex justify-end pt-4 border-t border-border/50">
+                                <button type="button" class="btn-outline-secondary px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors" data-dismiss="modal">
+                                    No, Keep Active
+                                </button>
+                                <form action="{% url 'donors:cancel_donation' donation.pk %}" method="post" class="inline-flex">
                                     {% csrf_token %}
-                                    <button type="submit" class="btn btn-danger">Yes, Cancel Donation</button>
+                                    <button type="submit" class="btn-danger px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                        Yes, Cancel Donation
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -178,11 +189,12 @@
 
                 {% if not donations %}
                 <tr>
-                    <td colspan="5" class="text-center py-5">
-                        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
-                        <h5 class="text-muted mb-3">You haven't created any donations yet.</h5>
-                        <a href="{% url 'donors:create_donation' %}" class="btn btn-primary">
-                            <i class="bi bi-plus-circle me-2"></i>Create Your First Donation
+                    <td colspan="5" class="text-center py-12">
+                        <i class="bi bi-inbox text-4xl text-gray-400 mb-4"></i>
+                        <h5 class="text-gray-500 mb-3">You haven't created any donations yet.</h5>
+                        <a href="{% url 'donors:create_donation' %}"
+                           class="btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="bi bi-plus-circle"></i>Create Your First Donation
                         </a>
                     </td>
                 </tr>
@@ -193,51 +205,50 @@
 
     <!-- Pagination -->
     {% if is_paginated %}
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center mt-4">
-            {% if page_obj.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link" aria-hidden="true">&laquo;</span>
-            </li>
-            {% endif %}
+    <nav class="mt-8 flex justify-center space-x-2">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="px-4 py-2 rounded-lg bg-white/50 border border-border/50 hover:bg-white/75 transition-colors">
+            <i class="bi bi-chevron-left"></i>
+        </a>
+        {% else %}
+        <span class="px-4 py-2 rounded-lg bg-white/50 border border-border/50 text-gray-400">
+            <i class="bi bi-chevron-left"></i>
+        </span>
+        {% endif %}
 
-            {% for num in paginator.page_range %}
-                {% if page_obj.number == num %}
-                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-            {% else %}
-            <li class="page-item disabled">
-                <span class="page-link" aria-hidden="true">&raquo;</span>
-            </li>
+        {% for num in paginator.page_range %}
+            {% if page_obj.number == num %}
+            <span class="px-4 py-2 rounded-lg bg-primary/20 text-primary-600 font-medium">{{ num }}</span>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <a href="?page={{ num }}"
+               class="px-4 py-2 rounded-lg bg-white/50 border border-border/50 hover:bg-white/75 transition-colors">{{ num }}</a>
             {% endif %}
-        </ul>
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}"
+           class="px-4 py-2 rounded-lg bg-white/50 border border-border/50 hover:bg-white/75 transition-colors">
+            <i class="bi bi-chevron-right"></i>
+        </a>
+        {% else %}
+        <span class="px-4 py-2 rounded-lg bg-white/50 border border-border/50 text-gray-400">
+            <i class="bi bi-chevron-right"></i>
+        </span>
+        {% endif %}
     </nav>
     {% endif %}
-    {% else %}
-    <div class="text-center py-5">
-        <i class="bi bi-inbox fs-1 text-muted mb-4"></i>
-        <h5 class="text-muted mb-3">You haven't created any donations yet.</h5>
-        <p class="text-muted">
+
+    {% if not donations and not is_paginated %}
+    <div class="text-center py-12">
+        <i class="bi bi-inbox text-4xl text-gray-400 mb-4"></i>
+        <h5 class="text-gray-500 mb-3">You haven't created any donations yet.</h5>
+        <p class="text-gray-500 mb-6">
             Start by listing your surplus food donations to help those in need in your community.
         </p>
-        <a href="{% url 'donors:create_donation' %}" class="btn btn-primary btn-lg mt-3">
-            <i class="bi bi-plus-circle me-2"></i>Create Your First Donation
+        <a href="{% url 'donors:create_donation' %}"
+           class="btn-primary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center gap-3">
+            <i class="bi bi-plus-circle"></i>Create Your First Donation
         </a>
     </div>
     {% endif %}
@@ -246,63 +257,56 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Search functionality
-        const searchInput = document.getElementById('donationSearch');
-        const tableBody = document.getElementById('donationTableBody');
-        const rows = tableBody.getElementsByTagName('tr');
+document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const searchInput = document.getElementById('donationSearch');
+    const tableBody = document.getElementById('donationTableBody');
+    const rows = tableBody.getElementsByTagName('tr');
 
-        if (searchInput && tableBody) {
-            searchInput.addEventListener('input', function() {
-                const filter = this.value.toLowerCase();
-                let found = false;
+    if (searchInput && tableBody) {
+        searchInput.addEventListener('input', function() {
+            const filter = this.value.toLowerCase();
+            let found = false;
+            let visibleCount = 0;
 
-                Array.from(rows).forEach(row => {
-                    // Skip the "no donations" row
-                    if (row.colSpan === 5) return;
+            Array.from(rows).forEach(row => {
+                // Skip the "no donations" row
+                if (row.colSpan === 5) return;
 
-                    const foodType = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
-                    const quantity = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                    const status = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const foodType = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const quantity = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
 
-                    if (foodType.includes(filter) || quantity.includes(filter) || status.includes(filter)) {
-                        row.style.display = '';
-                        found = true;
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-
-                // Show/hide "no results" message
-                const noResultsRow = tableBody.querySelector('tr[colspan="5"]');
-                if (!found && !noResultsRow) {
-                    // Add no results row
-                    const noResults = document.createElement('tr');
-                    noResults.innerHTML = '<td colspan="5" class="text-center py-4"><i class="bi bi-search me-2"></i>No donations match your search.</td>';
-                    tableBody.appendChild(noResults);
-                } else if (found && noResultsRow) {
-                    // Remove no results row
-                    noResultsRow.remove();
+                if (foodType.includes(filter) || quantity.includes(filter) || status.includes(filter)) {
+                    row.style.display = '';
+                    found = true;
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
                 }
             });
-        }
 
-        // Add hover lift effect to table rows
-        const tableRows = document.querySelectorAll('#donationTableBody tr:not([colspan])');
-        tableRows.forEach(row => {
-            row.addEventListener('mouseenter', function() {
-                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
-            });
-            row.addEventListener('mouseleave', function() {
-                this.style.backgroundColor = '';
-            });
+            // Show/hide "no results" message
+            const noResultsRow = tableBody.querySelector('tr[colspan="5"][data-no-results]');
+            if (!found && visibleCount === 0 && !noResultsRow) {
+                // Add no results row
+                const noResults = document.createElement('tr');
+                noResults.setAttribute('colspan', '5');
+                noResults.setAttribute('data-no-results', 'true');
+                noResults.innerHTML = '<td class="text-center py-4"><i class="bi bi-search me-2"></i>No donations match your search.</td>';
+                tableBody.appendChild(noResults);
+            } else if ((found || visibleCount > 0) && noResultsRow) {
+                // Remove no results row
+                noResultsRow.remove();
+            }
         });
+    }
 
-        // Status badge tooltips
-        const statusBadges = document.querySelectorAll('.badge[title]');
-        statusBadges.forEach(badge => {
-            new bootstrap.Tooltip(badge);
-        });
+    // Status badge tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        // This would normally initialize tooltips, but we're using native HTML title attributes
+        // which work fine without additional JS for basic tooltips
     });
+});
 </script>
 {% endblock %}

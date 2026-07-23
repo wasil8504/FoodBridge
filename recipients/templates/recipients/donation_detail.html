@@ -3,107 +3,158 @@
 {% block title %}Donation Details - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card hover-lift border-0 shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h2 class="card-title mb-0"><i class="bi bi-file-earmark-text me-2"></i>{{ donation.get_food_type_display }}</h2>
-                </div>
-                <div class="card-body">
-                    {% if donation.description %}
-                    <p class="mb-4">{{ donation.description }}</p>
-                    {% endif %}
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+            <div class="card-header bg-primary/90 text-white">
+                <h2 class="card-title mb-0 flex items-center gap-3">
+                    <i class="bi bi-file-earmark-text text-white"></i>{{ donation.get_food_type_display }}
+                </h2>
+            </div>
+            <div class="card-body p-6">
+                {% if donation.description %}
+                <p class="mb-6 text-gray-600">{{ donation.description }}</p>
+                {% endif %}
 
-                    <ul class="list-group list-group-flush mb-4">
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-box me-2"></i> Quantity:</span>
-                                <strong>{{ donation.quantity }} {{ donation.quantity_unit }}</strong>
+                <div class="space-y-6">
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-box text-primary-600 text-xl"></i>
                             </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-geo-alt me-2"></i> Pickup Location:</span>
-                                <span>{{ donation.pickup_location }}</span>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-clock me-2"></i> Pickup Window:</span>
-                                <span>
-                                    {{ donation.pickup_window_start|date:"M d, Y H:i" }} -
-                                    {{ donation.pickup_window_end|date:"M d, Y H:i" }}
-                                </span>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-calendar-x me-2"></i> Expiry Date:</span>
-                                <span class="text-{% if donation.is_expired %}danger{% elif donation.days_until_expiry < 1 %}warning{% else %}success{% endif %}">
-                                    {{ donation.expiry_date|date:"M d, Y H:i" }}
-                                    (<span class="badge bg-{% if donation.is_expired %}danger{% elif donation.days_until_expiry < 1 %}warning{% else %}success{% endif %}">
-                                        {{ donation.days_until_expiry }}d left
-                                    </span>
-                                </span>
-                            </div>
-                        </li>
-                        <li class="list-group-item">
-                            <div class="d-flex justify-content-between">
-                                <span><i class="bi bi-check-circle me-2"></i> Status:</span>
-                                <span class="badge bg-{% if donation.status == 'available' %}success{% elif donation.status == 'pending' %}info{% elif donation.status == 'matched' %}primary{% elif donation.status == 'claimed' %}secondary{% elif donation.status == 'picked_up' %}dark{% elif donation.status == 'completed' %}secondary{% else %}secondary{% endif %}">
-                                    {{ donation.get_status_display }}
-                                </span>
-                            </div>
-                        </li>
-                    </ul>
-
-                    {% if user.is_authenticated and user.role == 'recipient' and donation.status == 'available' %}
-                    <form method="post" action="{% url 'recipients:request_donation' donation.pk %}">
-                        {% csrf_token %}
-                        <div class="mb-4">
-                            <label for="message" class="form-label fw-medium">
-                                Message to Donor <span class="text-muted">(Optional)</span>
-                            </label>
-                            <textarea id="message" name="message" class="form-control" rows="4" maxlength="500"
-                                      placeholder="Add a note to the donor about your organization or pickup arrangements..."></textarea>
-                            {% if form.message.help_text %}
-                            <small class="form-text text-muted">{{ form.message.help_text }}</small>
-                            {% endif %}
-                            <div class="char-counter mt-2">
-                                <small>Characters remaining: <span class="counter-value">500</span></small>
-                            </div>
+                            <span class="text-sm font-medium text-gray-500">Quantity:</span>
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-check-circle me-2"></i>Send Request
-                            </button>
-                            <a href="{% url 'recipients:donation_list' %}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x-lg me-2"></i>Cancel
-                            </a>
-                        </div>
-                    </form>
-                    {% elif user.is_authenticated and user.role == 'donor' and donation.user == user %}
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'donors:edit_donation' donation.pk %}" class="btn btn-outline-secondary">
-                            <i class="bi bi-pencil me-2"></i>Edit Donation
-                        </a>
-                        {% if donation.status == 'available' %}
-                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                            <i class="bi bi-trash me-2"></i>Cancel Donation
-                        </button>
-                        {% endif %}
-                        <a href="{% url 'donors:donation_list' %}" class="btn btn-outline-primary">
-                            <i class="bi bi-arrow-left me-2"></i>Back to Donations
-                        </a>
+                        <p class="text-2xl font-bold text-gray-800">{{ donation.quantity }} {{ donation.quantity_unit }}</p>
                     </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-geo-alt text-primary-600 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-500">Pickup Location:</span>
+                        </div>
+                        <p class="text-gray-700">{{ donation.pickup_location }}</p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-clock text-primary-600 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-500">Pickup Window:</span>
+                        </div>
+                        <p class="text-gray-700">
+                            {{ donation.pickup_window_start|date:"M d, Y H:i" }} -
+                            {{ donation.pickup_window_end|date:"M d, Y H:i" }}
+                        </p>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-calendar-x text-primary-600 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-500">Expiry Date:</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="font-medium text-gray-800">
+                                {{ donation.expiry_date|date:"M d, Y H:i" }}
+                            </span>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if donation.is_expired %}bg-red-50 text-red-800
+                                    {% elif donation.days_until_expiry < 1 %}bg-yellow-50 text-yellow-800
+                                    {% else %}bg-green-50 text-green-800{% endif %}">
+                                {{ donation.days_until_expiry }}d left
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="flex-shrink-0">
+                                <i class="bi bi-check-circle text-primary-600 text-xl"></i>
+                            </div>
+                            <span class="text-sm font-medium text-gray-500">Status:</span>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                {% if donation.status == 'available' %}bg-green-50 text-green-800
+                                {% elif donation.status == 'pending' %}bg-yellow-50 text-yellow-800
+                                {% elif donation.status == 'matched' %}bg-blue-50 text-blue-800
+                                {% elif donation.status == 'claimed' %}bg-indigo-50 text-indigo-800
+                                {% elif donation.status == 'picked_up' %}bg-gray-50 text-gray-800
+                                {% elif donation.status == 'completed' %}bg-gray-800 text-gray-50
+                                {% else %}bg-gray-50 text-gray-800{% endif %}">
+                            {{ donation.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex flex-col sm:flex-row gap-4">
+                    {% if user.is_authenticated and user.role == 'donor' and donation.user == user %}
+                    <a href="{% url 'donors:edit_donation' donation.pk %}"
+                       class="w-full sm:w-auto btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-pencil"></i>Edit Donation
+                    </a>
+                    {% if donation.status == 'available' %}
+                    <button type="button"
+                            class="w-full sm:w-auto btn-outline-danger px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center"
+                            data-toggle="modal" data-target="#cancelModal">
+                        <i class="bi bi-trash"></i>Cancel Donation
+                    </button>
+                    {% endif %}
+                    <a href="{% url 'donors:donation_list' %}"
+                       class="w-full sm:w-auto btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-arrow-left"></i>Back to Donations
+                    </a>
+                    {% elif user.is_authenticated and user.role == 'recipient' and donation.status == 'available' %}
+                    <a href="{% url 'recipients:request_donation' donation.pk %}"
+                       class="w-full btn-success px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-hand-thumbs-up"></i>Request This Donation
+                    </a>
+                    <a href="{% url 'recipients:donation_list' %}"
+                       class="w-full mt-4 sm:mt-0 btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-arrow-left"></i>Back to Listings
+                    </a>
                     {% else %}
                     <a href="{% if user.is_authenticated and user.role == 'donor' %}{% url 'donors:donation_list' %}{% else %}{% url 'recipients:donation_list' %}{% endif %}"
-                       class="btn btn-outline-primary w-100">
-                        <i class="bi bi-arrow-left me-2"></i>Back to Listings
+                       class="w-full btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 justify-center">
+                        <i class="bi bi-arrow-left"></i>Back to Listings
                     </a>
                     {% endif %}
                 </div>
+
+                <!-- Cancel Modal -->
+                {% if user.is_authenticated and user.role == 'donor' and donation.user == user and donation.status == 'available' %}
+                <div class="modal fixed inset-0 z-50 flex items-center justify-center" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true" style="display: none;">
+                    <div class="modal-dialog relative w-full max-w-md px-4">
+                        <div class="modal-content bg-white/90 backdrop-blur-sm border border-border/50 rounded-lg shadow-lg relative">
+                            <div class="modal-header pb-4 border-b border-border/50">
+                                <h5 class="modal-title text-2xl font-bold text-primary-600" id="cancelModalLabel">Cancel Donation</h5>
+                                <button type="button" class="btn-close text-gray-500 hover:text-gray-400" data-dismiss="modal" aria-label="Close">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                            </div>
+                            <div class="modal-body space-y-4">
+                                <p>Are you sure you want to cancel this donation?</p>
+                                <p><strong>{{ donation.get_food_type_display }}</strong> - {{ donation.quantity }} {{ donation.quantity_unit }}</p>
+                                <p class="mt-4 text-sm text-gray-500">This action cannot be undone.</p>
+                            </div>
+                            <div class="modal-footer flex justify-end pt-4 border-t border-border/50">
+                                <button type="button" class="btn-outline-secondary px-4 py-2 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors" data-dismiss="modal">
+                                    No, Keep Active
+                                </button>
+                                <form action="{% url 'donors:cancel_donation' donation.pk %}" method="post" class="inline-flex">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-danger px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                                        Yes, Cancel Donation
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -117,19 +168,19 @@
         const messageTextarea = document.getElementById('id_message') || document.getElementById('message');
         if (messageTextarea) {
             const counter = document.createElement('div');
-            counter.className = 'char-counter mt-2';
-            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
+            counter.className = 'mt-2 flex justify-between';
+            counter.innerHTML = '<small>Characters remaining: <span id="message-counter" class="font-medium">' +
                                (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
             messageTextarea.parentNode.appendChild(counter);
 
             const updateCounter = () => {
                 const maxLength = messageTextarea.getAttribute('maxlength') || 500;
                 const remaining = maxLength - messageTextarea.value.length;
-                counter.querySelector('.counter-value').textContent = remaining;
+                document.getElementById('message-counter').textContent = remaining;
                 if (remaining < 10) {
-                    counter.querySelector('.counter-value').classList.add('text-danger');
+                    document.getElementById('message-counter').classList.add('text-red-600');
                 } else {
-                    counter.querySelector('.counter-value').classList.remove('text-danger');
+                    document.getElementById('message-counter').classList.remove('text-red-600');
                 }
             };
 
@@ -138,12 +189,6 @@
                 setTimeout(updateCounter, 0);
             });
             updateCounter(); // Initial call
-        }
-
-        // Initialize tooltip for expiry badge if needed
-        const expiryBadge = document.querySelector('.badge[data-bs-toggle="tooltip"]');
-        if (expiryBadge) {
-            new bootstrap.Tooltip(expiryBadge);
         }
     });
 </script>

@@ -3,145 +3,145 @@
 {% block title %}Recipient Registration - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6 col-lg-5">
-            <div class="card hover-lift border-0 shadow-sm">
-                <div class="card-header bg-success text-white pt-4 pb-3">
-                    <h2 class="card-title mb-0"><i class="bi bi-person-plus me-2"></i>Register as Recipient</h2>
-                </div>
-                <div class="card-body p-4">
-                    <p class="text-center text-muted mb-4">
-                        Join our network of verified recipients helping to reduce food waste and fight hunger in our community.
-                    </p>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-md mx-auto">
+        <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
+            <div class="card-header bg-green-500/90 text-white pb-4">
+                <h2 class="card-title mb-0 flex items-center gap-3">
+                    <i class="bi bi-person-plus text-white"></i>Join as Recipient
+                </h2>
+            </div>
+            <div class="card-body p-6">
+                <p class="text-center text-gray-600 mb-6">
+                    Join our network of verified recipients helping to reduce food waste and fight hunger in our community.
+                </p>
 
-                    <form method="post" action="{% url 'accounts:register_recipient' %}" novalidate>
-                        {% csrf_token %}
+                <form method="post" action="{% url 'accounts:register_recipient' %}" novalidate>
+                    {% csrf_token %}
 
-                        <!-- Form Header -->
-                        <div class="mb-4">
-                            <p class="text-muted">
-                                Please provide the following information to create your recipient account.
-                                All fields marked with * are required.
-                            </p>
-                        </div>
+                    <!-- Form Header -->
+                    <div class="mb-6">
+                        <p class="text-gray-500">
+                            Please provide the following information to create your recipient account.
+                            All fields marked with * are required.
+                        </p>
+                    </div>
 
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
+                    {% if form.non_field_errors %}
+                    <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                        <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="grid gap-6 md:grid-cols-2">
+                        <!-- Username -->
+                        <div>
+                            <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Username <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.username }}
+                            {% if form.username.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.username.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.username.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
                             {% endfor %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                        {% endif %}
-
-                        <div class="row g-4">
-                            <!-- Username -->
-                            <div class="col-12">
-                                <label for="{{ form.username.id_for_label }}" class="form-label fw-medium">
-                                    Username <span class="text-danger">*</span>
-                                </label>
-                                {{ form.username }}
-                                {% if form.username.help_text %}
-                                <small class="form-text text-muted">{{ form.username.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.username.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Email -->
-                            <div class="col-12">
-                                <label for="{{ form.email.id_for_label }}" class="form-label fw-medium">
-                                    Email <span class="text-danger">*</span>
-                                </label>
-                                {{ form.email }}
-                                {% if form.email.help_text %}
-                                <small class="form-text text-muted">{{ form.email.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.email.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Phone Number -->
-                            <div class="col-12">
-                                <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-medium">
-                                    Phone Number
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
-                                    {{ form.phone_number }}
-                                </div>
-                                {% if form.phone_number.help_text %}
-                                <small class="form-text text-muted">{{ form.phone_number.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.phone_number.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Address -->
-                            <div class="col-12">
-                                <label for="{{ form.address.id_for_label }}" class="form-label fw-medium">
-                                    Address
-                                </label>
-                                {{ form.address }}
-                                {% if form.address.help_text %}
-                                <small class="form-text text-muted">{{ form.address.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.address.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Password -->
-                            <div class="col-12">
-                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-medium">
-                                    Password <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    {{ form.password1 }}
-                                </div>
-                                {% if form.password1.help_text %}
-                                <small class="form-text text-muted">{{ form.password1.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.password1.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
-
-                            <!-- Confirm Password -->
-                            <div class="col-12">
-                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-medium">
-                                    Confirm Password <span class="text-danger">*</span>
-                                </label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                                    {{ form.password2 }}
-                                </div>
-                                {% if form.password2.help_text %}
-                                <small class="form-text text-muted">{{ form.password2.help_text }}</small>
-                                {% endif %}
-                                {% for error in form.password2.errors %}
-                                <div class="invalid-feedback d-block">{{ error }}</div>
-                                {% endfor %}
-                            </div>
                         </div>
 
-                        <!-- Submit Button -->
-                        <div class="col-12 mt-5">
-                            <button type="submit" class="btn btn-success btn-lg px-5">
-                                <i class="bi bi-check-circle me-2"></i>Create Account
-                            </button>
-                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary btn-lg px-5 ms-3">
-                                <i class="bi bi-box-arrow-in-left me-2"></i>Sign In
-                            </a>
+                        <!-- Email -->
+                        <div>
+                            <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Email <span class="text-red-500">*</span>
+                            </label>
+                            {{ form.email }}
+                            {% if form.email.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.email.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.email.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
                         </div>
-                    </form>
-                </div>
+
+                        <!-- Phone Number (Optional) -->
+                        <div>
+                            <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Phone Number
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500"><i class="bi bi-telephone"></i></span>
+                                {{ form.phone_number }}
+                            </div>
+                            {% if form.phone_number.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.phone_number.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.phone_number.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Address (Optional) -->
+                        <div class="md:col-span-2">
+                            <label for="{{ form.address.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Address
+                            </label>
+                            {{ form.address }}
+                            {% if form.address.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.address.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.address.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Password -->
+                        <div>
+                            <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Password <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500"><i class="bi bi-lock"></i></span>
+                                {{ form.password1 }}
+                            </div>
+                            {% if form.password1.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.password1.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.password1.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Confirm Password -->
+                        <div>
+                            <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                                Confirm Password <span class="text-red-500">*</span>
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <span class="text-gray-500"><i class="bi bi-lock"></i></span>
+                                {{ form.password2 }}
+                            </div>
+                            {% if form.password2.help_text %}
+                            <p class="mt-1 text-sm text-gray-500">{{ form.password2.help_text }}</p>
+                            {% endif %}
+                            {% for error in form.password2.errors %}
+                            <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-8 flex justify-end">
+                        <a href="{% url 'accounts:login' %}"
+                           class="btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="bi bi-box-arrow-in-left"></i>Sign In
+                        </a>
+                        <button type="submit" class="ml-4 btn-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                            <i class="bi bi-check-circle"></i>Create Account
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -151,29 +151,6 @@
 {% block extra_js %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Character counters for textareas (if any)
-        const textareas = document.querySelectorAll('textarea[maxlength]');
-        textareas.forEach(textarea => {
-            const counter = document.createElement('div');
-            counter.className = 'char-counter mt-2';
-            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
-                               textarea.getAttribute('maxlength') + '</span></small>';
-            textarea.parentNode.appendChild(counter);
-
-            const updateCounter = () => {
-                const remaining = textarea.getAttribute('maxlength') - textarea.value.length;
-                counter.querySelector('.counter-value').textContent = remaining;
-                if (remaining < 10) {
-                    counter.querySelector('.counter-value').classList.add('text-danger');
-                } else {
-                    counter.querySelector('.counter-value').classList.remove('text-danger');
-                }
-            };
-
-            textarea.addEventListener('input', updateCounter);
-            updateCounter(); // Initial call
-        });
-
         // Form validation styling
         const forms = document.querySelectorAll('form');
         forms.forEach(form => {
@@ -181,41 +158,27 @@
                 if (!form.checkValidity()) {
                     e.preventDefault();
 
-                    // Add invalid class to fields
-                    const inputs = form.querySelectorAll('input, select, textarea');
-                    inputs.forEach(input => {
-                        if (!input.checkValidity()) {
-                            input.classList.add('is-invalid');
-                            // Add shake animation
-                            input.animate([
-                                { transform: 'translateX(0)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(0)' }
-                            ], {
-                                duration: 300,
-                                iterations: 1
-                            });
-                        } else {
-                            input.classList.remove('is-invalid');
-                            input.classList.add('is-valid');
-                        }
+                    // Add subtle shake animation to invalid fields
+                    const invalidFields = form.querySelectorAll(':invalid');
+                    invalidFields.forEach(field => {
+                        field.classList.add('animate-pulse');
+                        setTimeout(() => {
+                            field.classList.remove('animate-pulse');
+                        }, 500);
                     });
                 }
             });
 
-            // Real-time validation
+            // Real-time validation styling
             const inputs = form.querySelectorAll('input, select, textarea');
             inputs.forEach(input => {
                 input.addEventListener('input', function() {
                     if (this.checkValidity()) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-green-500');
                     } else {
-                        this.classList.remove('is-valid');
-                        this.classList.add('is-invalid');
+                        this.classList.remove('border-green-500');
+                        this.classList.add('border-red-500');
                     }
                 });
             });

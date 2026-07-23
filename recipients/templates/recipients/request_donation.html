@@ -63,7 +63,7 @@
                             {% for error in form.non_field_errors %}
                                 {{ error }}
                             {% endfor %}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
                         </div>
                         {% endif %}
 
@@ -78,20 +78,15 @@
                             {% for error in form.message.errors %}
                             <div class="invalid-feedback d-block">{{ error }}</div>
                             {% endfor %}
-                            <div class="char-counter mt-2">
-                                <small>Characters remaining: <span class="counter-value">500</span></small>
-                            </div>
                         </div>
 
-                        <!-- Submit Buttons -->
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'recipients:donation_detail' donation.pk %}"
-                               class="btn btn-outline-secondary me-2">
-                                <i class="bi bi-x-lg me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-success">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-check-circle me-2"></i>Send Request
                             </button>
+                            <a href="{% url 'recipients:donation_list' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-x"></i>Cancel
+                            </a>
                         </div>
                     </form>
                 </div>
@@ -103,80 +98,33 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Character counter for message textarea
-        const messageTextarea = document.getElementById('id_message');
-        if (messageTextarea) {
-            const counter = document.createElement('div');
-            counter.className = 'char-counter mt-2';
-            counter.innerHTML = '<small>Characters remaining: <span class="counter-value">' +
-                               (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
-            messageTextarea.parentNode.appendChild(counter);
+document.addEventListener('DOMContentLoaded', function() {
+    // Character counter for message textarea (if present)
+    const messageTextarea = document.getElementById('id_message') || document.getElementById('message');
+    if (messageTextarea) {
+        const counter = document.createElement('div');
+        counter.className = 'mt-2 flex justify-between';
+        counter.innerHTML = '<small>Characters remaining: <span id="message-counter" class="font-medium">' +
+                           (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
+        messageTextarea.parentNode.appendChild(counter);
 
-            const updateCounter = () => {
-                const maxLength = messageTextarea.getAttribute('maxlength') || 500;
-                const remaining = maxLength - messageTextarea.value.length;
-                counter.querySelector('.counter-value').textContent = remaining;
-                if (remaining < 10) {
-                    counter.querySelector('.counter-value').classList.add('text-danger');
-                } else {
-                    counter.querySelector('.counter-value').classList.remove('text-danger');
-                }
-            };
+        const updateCounter = () => {
+            const maxLength = messageTextarea.getAttribute('maxlength') || 500;
+            const remaining = maxLength - messageTextarea.value.length;
+            document.getElementById('message-counter').textContent = remaining;
+            if (remaining < 10) {
+                document.getElementById('message-counter').classList.add('text-red-600');
+            } else {
+                document.getElementById('message-counter').classList.remove('text-red-600');
+            }
+        };
 
-            messageTextarea.addEventListener('input', updateCounter);
-            messageTextarea.addEventListener('paste', () => {
-                setTimeout(updateCounter, 0);
-            });
-            updateCounter(); // Initial call
-        }
-
-        // Form validation styling
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                if (!form.checkValidity()) {
-                    e.preventDefault();
-
-                    // Add invalid class to fields
-                    const inputs = form.querySelectorAll('input, select, textarea');
-                    inputs.forEach(input => {
-                        if (!input.checkValidity()) {
-                            input.classList.add('is-invalid');
-                            // Add shake animation
-                            input.animate([
-                                { transform: 'translateX(0)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(-5px)' },
-                                { transform: 'translateX(5px)' },
-                                { transform: 'translateX(0)' }
-                            ], {
-                                duration: 300,
-                                iterations: 1
-                            });
-                        } else {
-                            input.classList.remove('is-invalid');
-                            input.classList.add('is-valid');
-                        }
-                    });
-                }
-            });
-
-            // Real-time validation
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    if (this.checkValidity()) {
-                        this.classList.remove('is-invalid');
-                        this.classList.add('is-valid');
-                    } else {
-                        this.classList.remove('is-valid');
-                        this.classList.add('is-invalid');
-                    }
-                });
-            });
+        messageTextarea.addEventListener('input', updateCounter);
+        messageTextarea.addEventListener('paste', () => {
+            setTimeout(updateCounter, 0);
         });
-    });
+        updateCounter(); // Initial call
+    }
+});
 </script>
 {% endblock %}

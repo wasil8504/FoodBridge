@@ -1,151 +1,263 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Food Bridge{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Custom CSS -->
-    <style>
-        body {
-            padding-top: 56px; /* Offset for fixed navbar */
-        }
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-        }
-        .stat-card i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        .step-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            height: 100%;
-        }
-        .step-number {
-            background: #0d6efd;
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-        .donation-card {
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-        .donation-card .card-body {
-            display: flex;
-            flex-direction: column;
-        }
-        .donation-card .btn-md-auto {
-            margin-top: auto;
-        }
-        .feature-box {
-            text-align: center;
-            padding: 20px;
-            border-radius: 10px;
-            background: #f8f9fa;
-            height: 100%;
-        }
-        .feature-box i {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-        }
-        footer {
-            background-color: #f8f9fa;
-            padding: 20px 0;
-            margin-top: 40px;
-        }
-    </style>
+
+    <!-- Tailwind CSS -->
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+
+    <!-- Google Fonts - From Design System Recommendation -->
+    <link href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap Icons (for icons) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    {% block extra_css %}{% endblock %}
 </head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{% url 'website:home' %}">Food Bridge</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'website:home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'website:about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'website:contact' %}">Contact</a>
-                    </li>
-                    {% if user.is_authenticated %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            {{ user.username }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            {% if user.role == 'donor' %}
-                            <li><a class="dropdown-item" href="{% url 'donors:dashboard' %}">Donor Dashboard</a></li>
-                            {% elif user.role == 'recipient' %}
-                            <li><a class="dropdown-item" href="{% url 'recipients:dashboard' %}">Recipient Dashboard</a></li>
-                            {% elif user.role == 'admin' %}
-                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Panel</a></li>
+<body class="font-sans antialiased bg-background text-foreground min-h-screen">
+    <!-- Skip to Content Link - Critical for Accessibility -->
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:bg-white focus:border focus:border-primary-500 focus:text-gray-900 focus:shadow-lg focus:uppercase focus:text-sm focus:font-medium focus:px-4 focus:py-2 focus:m-2">
+        Skip to main content
+    </a>
+
+    <nav class="bg-background/80 backdrop-blur-sm border-b border-border/50">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="flex-shrink-0 h-8 w-8">
+                            <svg class="h-8 w-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10a2 2 0 01-2 2h-2a2 2 0 01-2-2zM9 11h10"></path>
+                            </svg>
+                        </span>
+                        <span class="ml-3 text-xl font-semibold text-foreground">Food Bridge</span>
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <a href="{% url 'website:home' %}" class="px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background/80 focus:ring-white">Home</a>
+                            {% if user.is_authenticated %}
+                                <div class="relative">
+                                    <div>
+                                        <button type="button"
+                                                class="flex flex-col text-sm text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus-ring-offset-2 focus:ring-offset-background/80 focus-ring-white"
+                                                id="user-menu-button"
+                                                aria-expanded="false"
+                                                aria-haspopup="true">
+                                            <span class="sr-only">Open user menu</span>
+                                            <span class="-mr-0.5 mt-0.5 block h-5 w-5 overflow-hidden rounded-full bg-white">
+                                                <img class="h-full w-full" src="{% if user.profile_picture %}{{ user.profile_picture.url }}{% else %}{% static 'img/default-avatar.png' %}{% endif %}" alt="">
+                                            </span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Dropdown menu -->
+                                    <div class="hidden origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                         role="menu"
+                                         aria-orientation="vertical"
+                                         aria-labelledby="user-menu-button"
+                                         id="user-menu">
+                                        <!-- Active: "block", Hidden: "hidden" -->
+                                        {% if user.role == 'donor' %}
+                                            <a href="{% url 'donors:dashboard' %}"
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                               role="menuitem">
+                                                Donor Dashboard
+                                            </a>
+                                        {% elif user.role == 'recipient' %}
+                                            <a href="{% url 'recipients:dashboard' %}"
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                               role="menuitem">
+                                                Recipient Dashboard
+                                            </a>
+                                        {% elif user.role == 'admin' %}
+                                            <a href="{% url 'admin:index' %}"
+                                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                               role="menuitem">
+                                                Admin Panel
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'accounts:profile' %}"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                           role="menuitem">
+                                            Profile
+                                        </a>
+                                        <div class="border-t border-gray-200"></div>
+                                        <a href="{% url 'accounts:logout' %}"
+                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                           role="menuitem">
+                                            Sign out
+                                        </a>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <a href="{% url 'accounts:login' %}"
+                                   class="px-3 py-2 rounded-md text-sm font-medium text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background/80 focus-ring-white">
+                                    Sign in
+                                </a>
+                                <a href="{% url 'accounts:register_donor' %}"
+                                   class="px-3 py-2 rounded-md text-sm font-medium text-emerald-600 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background/80 focus:ring-emerald-500">
+                                    Become a Donor
+                                </a>
+                                <a href="{% url 'accounts:register_recipient' %}"
+                                   class="ml-3 px-3 py-2 rounded-md text-sm font-medium text-emerald-600 border border-emerald-600 hover:bg-emerald-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-background/80 focus:ring-emerald-500">
+                                    Join as Recipient
+                                </a>
                             {% endif %}
-                            <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
-                        </ul>
-                    </li>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:register_donor' %}">Donor Sign Up</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'accounts:register_recipient' %}">Recipient Sign Up</a>
-                    </li>
-                    {% endif %}
-                </ul>
+                        </div>
+                    </div>
+                    <div class="-mr-2 flex md:hidden">
+                        <!-- Mobile menu button-->
+                        <button type="button"
+                                class="bg-background/80 p-2 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus-ring-inset focus-ring-white"
+                                aria-controls="mobile-menu"
+                                aria-expanded="false">
+                            <span class="sr-only">Open main menu</span>
+                            <!--
+                                Icon when menu is closed.
+                                Menu open: "hidden", Menu closed: "block"
+                            -->
+                            <svg class="block h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M4 6h16M4 12h16M4 18h16"></path>
+                            </svg>
+                            <!--
+                                Icon when menu is open.
+                                Menu open: "block", Menu closed: "hidden"
+                            -->
+                            <svg class="hidden h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
 
-    <main>
-        {% block content %}
-        {% endblock %}
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div class="md:hidden" id="mobile-menu">
+        <div class="pt-2 pb-3 space-y-1">
+            <a href="{% url 'website:home' %}"
+               class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                Home
+            </a>
+            {% if user.is_authenticated %}
+                {% if user.role == 'donor' %}
+                    <a href="{% url 'donors:dashboard' %}"
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                        Donor Dashboard
+                    </a>
+                {% elif user.role == 'recipient' %}
+                    <a href="{% url 'recipients:dashboard' %}"
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                        Recipient Dashboard
+                    </a>
+                {% elif user.role == 'admin' %}
+                    <a href="{% url 'admin:index' %}"
+                       class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                        Admin Panel
+                    </a>
+                {% endif %}
+                <a href="{% url 'accounts:profile' %}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                    Profile
+                </a>
+                <a href="{% url 'accounts:logout' %}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                    Sign out
+                </a>
+            {% else %}
+                <a href="{% url 'accounts:login' %}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700">
+                    Sign in
+                </a>
+                <a href="{% url 'accounts:register_donor' %}"
+                   class="block px-3 py-2 rounded-md text-base font-medium text-emerald-600 border border-emerald-600 hover:bg-emerald-50">
+                    Become a Donor
+                </a>
+                <a href="{% url 'accounts:register_recipient' %}"
+                   class="block mt-2 px-3 py-2 rounded-md text-base font-medium text-emerald-600 border border-emerald-600 hover:bg-emerald-50">
+                    Join as Recipient
+                </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <main id="main-content" class="flex-1">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'success' %}bg-green-50 border-l-4 border-green-500{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-500{% elif message.tags == 'warning' %}bg-yellow-50 border-l-4 border-yellow-500{% else %}bg-blue-50 border-l-4 border-blue-500{% endif %}">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            {% if message.tags == 'success' %}
+                                <i class="bi bi-check-circle-fill text-green-500"></i>
+                            {% elif message.tags == 'error' %}
+                                <i class="bi bi-exclamation-triangle-fill text-red-500"></i>
+                            {% elseif message.tags == 'warning' %}
+                                <i class="bi bi-exclamation-triangle-fill text-yellow-500"></i>
+                            {% else %}
+                                <i class="bi bi-info-circle-fill text-blue-500"></i>
+                            {% endif %}
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-gray-700">{{ message }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {% block content %}
+            {% endblock %}
+        </div>
     </main>
 
-    <footer class="text-center">
-        <div class="container">
-            <p>&copy; {% now "Y" %} Food Bridge. All rights reserved.</p>
-            <p>
-                <a href="#">Privacy Policy</a> |
-                <a href="#">Terms of Service</a>
-            </p>
-            <div>
-                <a href="#" class="text-muted me-3"><i class="bi bi-facebook"></i></a>
-                <a href="#" class="text-muted me-3"><i class="bi bi-twitter"></i></a>
-                <a href="#" class="text-muted me-3"><i class="bi bi-instagram"></i></a>
-                <a href="#" class="text-muted"><i class="bi bi-linkedin"></i></a>
+    <!-- Footer -->
+    <footer class="bg-background/95 backdrop-blur-sm border-t border-border/50">
+        <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+            <div class="md:flex md:justify-between">
+                <div class="text-center mb-6 md:text-left mb-0">
+                    <h5 class="mb-3 font-semibold text-foreground">Food Bridge</h5>
+                    <p class="text-sm text-gray-400">
+                        Connecting food donors with those in need to reduce waste and fight hunger.
+                    </p>
+                </div>
+                <div class="space-x-8">
+                    <div class="text-center md:text-left">
+                        <h5 class="mb-3 font-semibold text-gray-200">Quick Links</h5>
+                        <ul class="list-none space-y-2 text-sm text-gray-400">
+                            <li><a href="#" class="hover:text-white">About Us</a></li>
+                            <li><a href="#" class="hover:text-white">How It Works</a></li>
+                            <li><a href="#" class="hover:text-white">FAQ</a></li>
+                            <li><a href="#" class="hover:text-white">Contact</a></li>
+                        </ul>
+                    </div>
+                    <div class="space-x-8">
+                        <h5 class="mb-3 font-semibold text-gray-200">Follow Us</h5>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-facebook"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-twitter"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-instagram"></i></a>
+                            <a href="#" class="text-gray-400 hover:text-white"><i class="bi bi-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t-2 border-border/50 text-center text-sm text-gray-400">
+                © {{ now|date:"Y" }} Food Bridge. All rights reserved.<br>
+                Abu Dhabi, UAE
             </div>
         </div>
     </footer>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="{% static 'js/custom.js' %}"></script>
+
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
