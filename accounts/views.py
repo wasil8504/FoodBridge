@@ -11,15 +11,8 @@ def user_login(request):
         if form.is_valid():
             username = form.cleaned_data.get('username')
             password = form.cleaned_data.get('password')
-            # Authenticate by username or email
+            # Authenticate by username or email (handled by custom backend)
             user = authenticate(request, username=username, password=password)
-            if user is None:
-                from .models import CustomUser
-                try:
-                    user_obj = CustomUser.objects.get(email=username)
-                    user = authenticate(request, username=user_obj.username, password=password)
-                except CustomUser.DoesNotExist:
-                    user = None
             if user is not None:
                 login(request, user)
                 messages.success(request, f'Welcome back, {user.username}!')

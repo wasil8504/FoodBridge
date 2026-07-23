@@ -5,13 +5,27 @@
 {% block content %}
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="max-w-3xl mx-auto">
-        <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
-            <div class="card-header bg-primary/90 text-white">
-                <h2 class="card-title mb-0 flex items-center gap-3">
-                    <i class="bi bi-plus-circle text-white"></i>Create Donation Listing
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-primary-600 text-white px-6 py-4">
+                <h2 class="text-xl font-bold flex items-center">
+                    <i class="bi bi-plus-circle mr-3"></i>Create Donation Listing
                 </h2>
             </div>
-            <div class="card-body p-6">
+            <div class="px-6 py-6">
+                <p class="text-gray-600 mb-4">
+                    Help reduce food waste by listing your surplus food donations.
+                    All donations are matched with verified recipients in your area.
+                </p>
+
+                {% if form.non_field_errors %}
+                <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                    <i class="bi bi-exclamation-triangle text-red-500 mr-2"></i>
+                    {% for error in form.non_field_errors %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
+                {% endif %}
+
                 <form method="post" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
 
@@ -22,15 +36,6 @@
                             All donations are matched with verified recipients in your area.
                         </p>
                     </div>
-
-                    {% if form.non_field_errors %}
-                    <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
-                        <i class="bi bi-exclamation-triangle text-red-600 mr-2"></i>
-                        {% for error in form.non_field_errors %}
-                        {{ error }}
-                        {% endfor %}
-                    </div>
-                    {% endif %}
 
                     <div class="grid gap-6 md:grid-cols-2">
                         <!-- Food Type -->
@@ -156,7 +161,7 @@
                             </label>
                             {{ form.special_instructions }}
                             {% if form.special_instructions.help_text %}
-                            <p class="mt-1 text-sm text-gray-500">{{ form.special_instructions.help_text }}</p>
+                            <p class="mt-1 text-sm text-gray-500">{{ form.special_instructions.help_text }}</phelp_text %}</p>
                             {% endif %}
                             {% for error in form.special_instructions.errors %}
                             <p class="mt-1 text-sm text-red-600">{{ error }}</p>
@@ -170,11 +175,12 @@
                     <!-- Submit Button -->
                     <div class="mt-8 flex justify-end gap-4">
                         <a href="{% url 'donors:dashboard' %}"
-                           class="btn-outline-secondary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center gap-3">
-                            <i class="bi bi-x-lg"></i>Cancel
+                           class="px-6 py-3 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                            <i class="bi bi-x"></i>Cancel
                         </a>
-                        <button type="submit" class="btn-primary px-6 py-3 rounded-full font-medium hover:shadow-lg transform hover:-translate-y-1 transition-all flex items-center gap-3">
-                            <i class="bi bi-plane"></i>Submit Donation Listing
+                        <button type="submit"
+                                class="px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                            <i class="bi bi-plane mr-2"></i>Submit Donation Listing
                         </button>
                     </div>
                 </form>
@@ -186,84 +192,84 @@
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Character counters for textareas
-        const descriptionTextarea = document.querySelector('#{{ form.description.id_for_label }}');
-        const instructionsTextarea = document.querySelector('#{{ form.special_instructions.id_for_label }}');
+document.addEventListener('DOMContentLoaded', function() {
+    // Character counters for textareas
+    const descriptionTextarea = document.querySelector('#{{ form.description.id_for_label }}');
+    const instructionsTextarea = document.querySelector('#{{ form.special_instructions.id_for_label }}');
 
-        if (descriptionTextarea) {
-            const descCounter = document.getElementById('desc-counter');
-            const updateDescCounter = () => {
-                const remaining = descriptionTextarea.getAttribute('maxlength') - descriptionTextarea.value.length;
-                descCounter.textContent = remaining;
-                if (remaining < 10) {
-                    descCounter.classList.add('text-red-500');
-                } else {
-                    descCounter.classList.remove('text-red-500');
-                }
-            };
+    if (descriptionTextarea) {
+        const descCounter = document.getElementById('desc-counter');
+        const updateDescCounter = () => {
+            const remaining = descriptionTextarea.getAttribute('maxlength') - descriptionTextarea.value.length;
+            descCounter.textContent = remaining;
+            if (remaining < 10) {
+                descCounter.classList.add('text-red-500');
+            } else {
+                descCounter.classList.remove('text-red-500');
+            }
+        };
 
-            descriptionTextarea.addEventListener('input', updateDescCounter);
-            updateDescCounter(); // Initial call
-        }
+        descriptionTextarea.addEventListener('input', updateDescCounter);
+        updateDescCounter(); // Initial call
+    }
 
-        if (instructionsTextarea) {
-            const instructionsCounter = document.getElementById('instructions-counter');
-            const updateInstructionsCounter = () => {
-                const remaining = instructionsTextarea.getAttribute('maxlength') - instructionsTextarea.value.length;
-                instructionsCounter.textContent = remaining;
-                if (remaining < 10) {
-                    instructionsCounter.classList.add('text-red-500');
-                } else {
-                    instructionsCounter.classList.remove('text-red-500');
-                }
-            };
+    if (instructionsTextarea) {
+        const instructionsCounter = document.getElementById('instructions-counter');
+        const updateInstructionsCounter = () => {
+            const remaining = instructionsTextarea.getAttribute('maxlength') - instructionsTextarea.value.length;
+            instructionsCounter.textContent = remaining;
+            if (remaining < 10) {
+                instructionsCounter.classList.add('text-red-500');
+            } else {
+                instructionsCounter.classList.remove('text-red-500');
+            }
+        };
 
-            instructionsTextarea.addEventListener('input', updateInstructionsCounter);
-            updateInstructionsCounter(); // Initial call
-        }
+        instructionsTextarea.addEventListener('input', updateInstructionsCounter);
+        updateInstructionsCounter(); // Initial call
+    }
 
-        // Form validation styling (using native HTML5 validation with custom styling)
-        const forms = document.querySelectorAll('form');
-        forms.forEach(form => {
-            form.addEventListener('submit', function(e) {
-                // Add subtle shake animation to invalid fields
-                const invalidFields = form.querySelectorAll(':invalid');
-                invalidFields.forEach(field => {
-                    field.classList.add('animate-pulse');
-                    setTimeout(() => {
-                        field.classList.remove('animate-pulse');
-                    }, 500);
-                });
-            });
-
-            // Real-time validation styling
-            const inputs = form.querySelectorAll('input, select, textarea');
-            inputs.forEach(input => {
-                input.addEventListener('input', function() {
-                    if (this.checkValidity()) {
-                        this.classList.remove('border-red-500');
-                        this.classList.add('border-green-500');
-                    } else {
-                        this.classList.remove('border-green-500');
-                        this.classList.add('border-red-500');
-                    }
-                });
+    // Form validation styling (using native HTML5 validation with custom styling)
+    const forms = document.querySelectorAll('form');
+    forms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            // Add subtle shake animation to invalid fields
+            const invalidFields = form.querySelectorAll(':invalid');
+            invalidFields.forEach(field => {
+                field.classList.add('animate-pulse');
+                setTimeout(() => {
+                    field.classList.remove('animate-pulse');
+                }, 500);
             });
         });
 
-        // Set min date for expiry date input to today
-        const expiryInput = document.querySelector('input[type="datetime-local"]');
-        if (expiryInput) {
-            const now = new Date();
-            const year = now.getFullYear();
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const today = `${year}-${month}-${day}T${hours}:${minutes}`;
-            expiryInput.setAttribute('min', today);
-        }
+        // Real-time validation styling
+        const inputs = form.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-green-500');
+                } else {
+                    this.classList.remove('border-green-500');
+                    this.classList.add('border-red-500');
+                }
+            });
+        });
     });
+
+    // Set min date for expiry date input to today
+    const expiryInput = document.querySelector('input[type="datetime-local"]');
+    if (expiryInput) {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const today = `${year}-${month}-${day}T${hours}:${minutes}`;
+        expiryInput.setAttribute('min', today);
+    }
+});
 </script>
 {% endblock %}

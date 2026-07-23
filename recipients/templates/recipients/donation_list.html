@@ -10,8 +10,8 @@
         </h1>
         <p class="text-gray-600 mt-2 max-w-xl">
             Browse surplus food donations available in your area.
-            <span class="ml-2 inline-block">
-                {% if donations %}<span class="font-medium">{{ donations|length }}</span> donation(s) available{% else %}No donations currently available{% endif %}
+            <span class="ml-2 inline-block font-medium">
+                {% if donations %}{{ donations|length }} donation(s) available{% else %}No donations currently available{% endif %}
             </span>
         </p>
     </div>
@@ -37,13 +37,13 @@
     <div id="donationCards" class="grid gap-6">
         {% for donation in donations %}
         <div class="col-span-1 md:col-span-2 lg:col-span-4">
-            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all group">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300 group">
                 {% if donation.days_until_expiry < 1 %}
-                <div class="absolute -top-2 left-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
+                <div class="-top-2 left-2 bg-red-500 text-white text-xs rounded-full px-2 py-1">
                     Expiring Soon
                 </div>
                 {% elif donation.days_until_expiry < 2 %}
-                <div class="absolute -top-2 left-2 bg-yellow-500 text-white text-xs rounded-full px-2 py-1">
+                <div class="-top-2 left-2 bg-yellow-500 text-white text-xs rounded-full px-2 py-1">
                     Expiring Today
                 </div>
                 {% endif %}
@@ -63,7 +63,7 @@
                         </div>
                     </div>
 
-                    <p class="text-gray-600 line-clamp-4">{{ description|truncatewords:30 }}</p>
+                    <p class="text-gray-600 line-clamp-4">{{ donation.description|truncatewords:30 }}</p>
 
                     <div class="grid gap-4 md:grid-cols-2">
                         <div class="flex items-start space-x-2">
@@ -81,7 +81,7 @@
                             </div>
                             <div>
                                 <span class="text-sm font-medium text-gray-500">Location:</span>
-                                <p class="text-gray-800 break-all">{{ pickup_location }}</p>
+                                <p class="text-gray-800 break-all">{{ donation.pickup_location }}</p>
                             </div>
                         </div>
                         <div class="flex items-start space-x-2">
@@ -91,8 +91,8 @@
                             <div>
                                 <span class="text-sm font-medium text-gray-500">Pickup Window:</span>
                                 <p class="text-gray-800">
-                                    {{ pickup_window_start|date:"M d, H:i" }} -
-                                    {{ pickup_window_end|date:"M d, H:i" }}
+                                    {{ donation.pickup_window_start|date:"M d, H:i" }} -
+                                    {{ donation.pickup_window_end|date:"M d, H:i" }}
                                 </p>
                             </div>
                         </div>
@@ -120,7 +120,7 @@
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a href="{% url 'accounts:register_donor' %}"
                class="btn-outline-primary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
-                <i class="bi bi-plus-circle"></i>Become a Doner
+                <i class="bi bi-plus-circle"></i>Become a Donor
             </a>
             <a href="{% url 'accounts:login' %}"
                class="btn-outline-secondary px-5 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">

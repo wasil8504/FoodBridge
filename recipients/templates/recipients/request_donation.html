@@ -3,93 +3,96 @@
 {% block title %}Request Donation - Food Bridge{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card hover-lift border-0 shadow-sm">
-                <div class="card-header bg-success text-white">
-                    <h2 class="card-title mb-0"><i class="bi bi-hand-thumbs-up me-2"></i>Request Donation</h2>
-                </div>
-                <div class="card-body">
-                    <p class="mb-4">
-                        You are requesting <strong>{{ donation.get_food_type_display }}</strong>
-                        from <strong>{{ donation.donor.username }}</strong>.
-                    </p>
+<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-2xl mx-auto">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+            <div class="bg-success-600 text-white px-6 py-4">
+                <h2 class="text-xl font-bold flex items-center">
+                    <i class="bi bi-hand-thumbs-up mr-3"></i>Request Donation
+                </h2>
+            </div>
+            <div class="px-6 py-6">
+                <p class="text-gray-600 mb-4">
+                    You are requesting <strong class="text-primary-600">{{ donation.get_food_type_display }}</strong>
+                    from <strong class="text-primary-600">{{ donation.donor.username }}</strong>.
+                </p>
 
-                    <div class="alert alert-info">
-                        <i class="bi bi-info-circle me-2"></i>
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+                    <p class="text-sm text-gray-700">
+                        <i class="bi bi-info-circle mr-2 text-blue-500"></i>
                         <strong>Note:</strong> Please be respectful and concise in your message to the donor.
-                    </div>
+                    </p>
+                </div>
 
-                    <form method="post" novalidate>
-                        {% csrf_token %}
+                <form method="post" novalidate>
+                    {% csrf_token %}
 
-                        <!-- Donation Details -->
-                        <div class="mb-4">
-                            <h6><i class="bi bi-info-circle me-2"></i>Donation Details</h6>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Food Type:</small>
-                                        <div class="fw-medium">{{ donation.get_food_type_display }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Quantity:</small>
-                                        <div class="fw-medium">{{ donation.quantity }} {{ donation.quantity_unit }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Location:</small>
-                                        <div class="fw-medium">{{ donation.pickup_location }}</div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-2">
-                                        <small class="text-muted">Expires:</small>
-                                        <div class="fw-medium text-{% if donation.days_until_expiry < 1 %}danger{% elif donation.days_until_expiry < 2 %}warning{% else %}success{% endif %}">
-                                            {{ donation.days_until_expiry }} day(s)
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Donation Details -->
+                    <div class="mb-6">
+                        <h3 class="text-lg font-semibold mb-3 flex items-center">
+                            <i class="bi bi-info-circle mr-2 text-primary-600"></i>Donation Details
+                        </h3>
+                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Food Type:</p>
+                                <p class="text-gray-800 font-medium">{{ donation.get_food_type_display }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Quantity:</p>
+                                <p class="text-gray-800 font-medium">{{ donation.quantity }} {{ donation.quantity_unit }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Location:</p>
+                                <p class="text-gray-800 font-medium break-words">{{ donation.pickup_location }}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Expires:</p>
+                                <p class="text-gray-800 font-medium
+                                    {% if donation.days_until_expiry < 1 %}text-red-600
+                                    {% elif donation.days_until_expiry < 2 %}text-yellow-600
+                                    {% else %}text-green-600{% endif %}">
+                                    {{ donation.days_until_expiry }} day(s)
+                                </p>
                             </div>
                         </div>
+                    </div>
 
-                        {% if form.non_field_errors %}
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            {% for error in form.non_field_errors %}
-                                {{ error }}
-                            {% endfor %}
-                            <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-                        </div>
+                    {% if form.non_field_errors %}
+                    <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                        <i class="bi bi-exclamation-triangle text-red-500 mr-2"></i>
+                        {% for error in form.non_field_errors %}
+                        {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-6">
+                        <label for="{{ form.message.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+                            Message to Donor <span class="text-gray-400">(Optional)</span>
+                        </label>
+                        {{ form.message }}
+                        {% if form.message.help_text %}
+                        <p class="mt-1 text-sm text-gray-500">{{ form.message.help_text }}</p>
                         {% endif %}
-
-                        <div class="mb-4">
-                            <label for="{{ form.message.id_for_label }}" class="form-label fw-medium">
-                                Message to Donor <span class="text-muted">(Optional)</span>
-                            </label>
-                            {{ form.message }}
-                            {% if form.message.help_text %}
-                            <small class="form-text text-muted">{{ form.message.help_text }}</small>
-                            {% endif %}
-                            {% for error in form.message.errors %}
-                            <div class="invalid-feedback d-block">{{ error }}</div>
-                            {% endfor %}
+                        {% for error in form.message.errors %}
+                        <p class="mt-1 text-sm text-red-600">{{ error }}</p>
+                        {% endfor %}
+                        <div class="mt-2 flex justify-between text-sm text-gray-500">
+                            <span>Characters remaining: <span id="message-counter">500</span></span>
                         </div>
+                    </div>
 
-                        <div class="d-grid gap-2">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-check-circle me-2"></i>Send Request
-                            </button>
-                            <a href="{% url 'recipients:donation_list' %}" class="btn btn-outline-secondary">
-                                <i class="bi bi-x"></i>Cancel
-                            </a>
-                        </div>
-                    </form>
-                </div>
+                    <div class="flex justify-end gap-4">
+                        <a href="{% url 'recipients:donation_list' %}"
+                           class="px-6 py-3 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors flex items-center gap-2">
+                            <i class="bi bi-x"></i>Cancel
+                        </a>
+                        <button type="submit"
+                                class="px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors flex items-center gap-2">
+                            <i class="bi bi-check-circle mr-2"></i>Send Request
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -99,13 +102,12 @@
 {% block extra_js %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Character counter for message textarea (if present)
-    const messageTextarea = document.getElementById('id_message') || document.getElementById('message');
+    // Character counter for message textarea
+    const messageTextarea = document.getElementById('id_message');
     if (messageTextarea) {
         const counter = document.createElement('div');
-        counter.className = 'mt-2 flex justify-between';
-        counter.innerHTML = '<small>Characters remaining: <span id="message-counter" class="font-medium">' +
-                           (messageTextarea.getAttribute('maxlength') || 500) + '</span></small>';
+        counter.className = 'mt-2 flex justify-between text-sm text-gray-500';
+        counter.innerHTML = '<span>Characters remaining: <span id="message-counter" class="font-medium">500</span></span>';
         messageTextarea.parentNode.appendChild(counter);
 
         const updateCounter = () => {
@@ -113,9 +115,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const remaining = maxLength - messageTextarea.value.length;
             document.getElementById('message-counter').textContent = remaining;
             if (remaining < 10) {
-                document.getElementById('message-counter').classList.add('text-red-600');
+                document.getElementById('message-counter').classList.add('text-red-500');
             } else {
-                document.getElementById('message-counter').classList.remove('text-red-600');
+                document.getElementById('message-counter').classList.remove('text-red-500');
             }
         };
 

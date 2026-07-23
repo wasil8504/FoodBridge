@@ -1,11 +1,15 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from . import views
 
 app_name = 'donations'
 
+# Create a router and register our viewsets with it.
+router = DefaultRouter()
+router.register(r'donations', views.DonationListingViewSet, basename='donation')
+router.register(r'requests', views.MatchRequestViewSet, basename='request')
+router.register(r'images', views.DonationImageViewSet, basename='donation-image')
+
 urlpatterns = [
-    path('', views.donation_list, name='list'),
-    path('<int:pk>/', views.donation_detail, name='detail'),
-    path('<int:pk>/request/', views.request_donation, name='request'),
-    path('my-requests/', views.my_requests, name='my_requests'),
+    path('api/', include(router.urls)),
 ]

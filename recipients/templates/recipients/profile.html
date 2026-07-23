@@ -15,37 +15,28 @@
 
     <div class="grid gap-6">
         <div class="col-span-2 md:col-span-8 lg:col-span-8">
-            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
-                <div class="card-header border-b border-border/20">
-                    <div class="flex justify-between items-center p-4">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
                         <h5 class="font-semibold flex items-center gap-2">
                             <i class="bi bi-building text-primary-600"></i>Organization Information
                         </h5>
                         <a href="{% url 'accounts:logout' %}"
-                           class="btn-outline-secondary px-3 py-1 rounded-md text-sm hover:shadow-lg transition-all flex items-center gap-2">
+                           class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2">
                             <i class="bi bi-box-arrow-right"></i>Logout
                         </a>
                     </div>
                 </div>
-                <div class="card-body p-6 space-y-6">
+                <div class="p-6 space-y-6">
                     <form method="post" novalidate>
                         {% csrf_token %}
 
                         {% if form.non_field_errors %}
-                        <div class="alert alert-danger" role="alert">
-                            <div class="flex items-start space-x-3">
-                                <div class="flex-shrink-0">
-                                    <i class="bi bi-exclamation-triangle text-red-600 mt-1"></i>
-                                </div>
-                                <div>
-                                    {% for error in form.non_field_errors %}
-                                    {{ error }}
-                                    {% endfor %}
-                                </div>
-                                <div class="ml-2 flex-shrink-0">
-                                    <button type="button" class="btn-close text-gray-500 hover:text-gray-400" data-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            </div>
+                        <div class="mb-4 p-4 bg-red-50 border-l-4 border-red-500 rounded-r-lg">
+                            <i class="bi bi-exclamation-triangle text-red-500 mr-2"></i>
+                            {% for error in form.non_field_errors %}
+                            {{ error }}
+                            {% endfor %}
                         </div>
                         {% endif %}
 
@@ -152,10 +143,10 @@
                         <!-- Submit Button -->
                         <div class="mt-6 flex justify-end">
                             <a href="{% url 'recipients:dashboard' %}"
-                               class="btn-outline-secondary px-4 py-2 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                               class="px-4 py-2 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors duration-200 flex items-center gap-2">
                                 <i class="bi bi-arrow-left"></i>Back to Dashboard
                             </a>
-                            <button type="submit" class="ml-4 btn-primary px-5 py-3 rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2">
+                            <button type="submit" class="ml-4 px-5 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors duration-200 flex items-center gap-2">
                                 <i class="bi bi-check-circle me-2"></i>Save Profile
                             </button>
                         </div>
@@ -165,26 +156,26 @@
         </div>
 
         <div class="col-span-2 md:col-span-4 lg:col-span-4">
-            <div class="card hover:shadow-lg hover:-translate-y-1 transition-all">
-                <div class="card-header border-b border-border/20">
-                    <h5 class="font-semibold p-4 flex items-center gap-2">
+            <div class="bg-white rounded-lg shadow-lg border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+                <div class="px-6 py-4 border-b border-gray-200">
+                    <h5 class="font-semibold flex items-center gap-2">
                         <i class="bi bi-bar-chart-line text-primary-600"></i>Your Impact
                     </h5>
                 </div>
-                <div class="card-body p-6 space-y-6">
-                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                <div class="p-6 space-y-6">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
                         <div class="flex flex-col items-center">
                             <div class="text-3xl font-bold text-green-600">{{ stats.total_requests }}</div>
                             <p class="text-sm font-medium text-gray-600">Requests Made</p>
                         </div>
                     </div>
-                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
                         <div class="flex flex-col items-center">
                             <div class="text-3xl font-bold text-amber-500">{{ stats.total_meals_received }}</div>
                             <p class="text-sm font-medium text-gray-600">Meals Received</p>
                         </div>
                     </div>
-                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all">
+                    <div class="text-center p-4 bg-gray-50 rounded-lg hover:shadow-md transition-all duration-300">
                         <div class="flex flex-col items-center">
                             <div class="text-3xl font-bold text-blue-500">{{ stats.total_weight_received }} lbs</div>
                             <p class="text-sm font-medium text-gray-600">Food Received</p>
@@ -199,75 +190,75 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Form validation styling
-    const forms = document.querySelectorAll('form');
-    forms.forEach(form => {
-        form.addEventListener('submit', function(e) {
-            if (!form.checkValidity()) {
-                e.preventDefault();
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation styling
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                if (!form.checkValidity()) {
+                    e.preventDefault();
 
-                // Add invalid class to fields
-                const inputs = form.querySelectorAll('input, select, textarea');
-                inputs.forEach(input => {
-                    if (!input.checkValidity()) {
-                        input.classList.add('is-invalid');
-                        // Add shake animation
-                        input.animate([
-                            { transform: 'translateX(0)' },
-                            { transform: 'translateX(-5px)' },
-                            { transform: 'translateX(5px)' },
-                            { transform: 'translateX(-5px)' },
-                            { transform: 'translateX(5px)' },
-                            { transform: 'translateX(0)' }
-                        ], {
-                            duration: 300,
-                            iterations: 1
-                        });
+                    // Add invalid class to fields
+                    const inputs = form.querySelectorAll('input, select, textarea');
+                    inputs.forEach(input => {
+                        if (!input.checkValidity()) {
+                            input.classList.add('border-red-500');
+                            // Add shake animation
+                            input.animate([
+                                { transform: 'translateX(0)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(-5px)' },
+                                { transform: 'translateX(5px)' },
+                                { transform: 'translateX(0)' }
+                            ], {
+                                duration: 300,
+                                iterations: 1
+                            });
+                        } else {
+                            input.classList.remove('border-red-500');
+                            input.classList.add('border-green-500');
+                        }
+                    });
+                }
+            });
+
+            // Real-time validation
+            const inputs = form.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    if (this.checkValidity()) {
+                        this.classList.remove('border-red-500');
+                        this.classList.add('border-green-500');
                     } else {
-                        input.classList.remove('is-invalid');
-                        input.classList.add('is-valid');
+                        this.classList.remove('border-green-500');
+                        this.classList.add('border-red-500');
                     }
                 });
-            }
+            });
         });
 
-        // Real-time validation
-        const inputs = form.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            input.addEventListener('input', function() {
-                if (this.checkValidity()) {
-                    this.classList.remove('is-invalid');
-                    this.classList.add('is-valid');
-                } else {
-                    this.classList.remove('is-valid');
-                    this.classList.add('is-invalid');
+        // Alert dismissal
+        const alertCloseButtons = document.querySelectorAll('[data-dismiss="alert"]');
+        alertCloseButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const alert = this.closest('[role="alert"]');
+                if (alert) {
+                    alert.remove();
                 }
             });
         });
-    });
 
-    // Alert dismissal
-    const alertCloseButtons = document.querySelectorAll('.alert .btn-close');
-    alertCloseButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const alert = this.closest('.alert');
-            if (alert) {
-                alert.remove();
-            }
+        // Add hover effect to buttons
+        const buttons = document.querySelectorAll('.btn-outline-primary, .btn-outline-secondary');
+        buttons.forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
+            });
+            button.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
         });
     });
-
-    // Add hover effect to buttons
-    const buttons = document.querySelectorAll('.btn-outline-primary, .btn-outline-secondary');
-    buttons.forEach(button => {
-        button.addEventListener('mouseenter', function() {
-            this.style.backgroundColor = 'rgba(5, 150, 105, 0.05)';
-        });
-        button.addEventListener('mouseleave', function() {
-            this.style.backgroundColor = '';
-        });
-    });
-});
 </script>
 {% endblock %}
