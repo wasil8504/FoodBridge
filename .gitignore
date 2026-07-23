@@ -97,6 +97,11 @@ venv.bak/
 # OS
 .DS_Store
 Thumbs.db
+*.bak
+*.bak2
+*.backup
+*.orig
+*.rej
 
 # Django stuff:
 *.log
