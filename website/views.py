@@ -19,7 +19,7 @@ def home(request):
 
     verified_recipients = CustomUser.objects.filter(
         role='recipient',
-        recipientprofile__is_verified=True
+        recipient_profile__is_verified=True
     ).count()
 
     cities_covered = DonationListing.objects.filter(

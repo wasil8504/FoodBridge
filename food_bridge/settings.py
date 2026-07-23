@@ -24,7 +24,7 @@ SECRET_KEY = config('SECRET_KEY', default=(
 ))
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=Csv())
 
@@ -91,29 +91,25 @@ ASGI_APPLICATION = 'food_bridge.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': config('DB_ENGINE', default='django.db.backends.postgresql'),
-        'NAME': config('DB_NAME', default='food_bridge'),
-        'USER': config('DB_USER', default='postgres'),
-        'PASSWORD': config('DB_PASSWORD', default=''),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        } if config('DB_ENGINE', default='') == 'django.db.backends.mysql' else {},
-        'CONN_MAX_AGE': 60,
-        'CONN_HEALTH_CHECKS': True,
-    }
-}
-
-# For local development fallback to SQLite when DEBUG is True to avoid
-# requiring external DB drivers during quick dev/test runs.
-if DEBUG and not config('DB_URL', default=''):
+DB_ENGINE = config('DB_ENGINE', default='django.db.backends.sqlite3')
+if DB_ENGINE in ('sqlite3', 'django.db.backends.sqlite3') or (DEBUG and not config('DB_HOST', default='')):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': DB_ENGINE,
+            'NAME': config('DB_NAME', default='food_bridge'),
+            'USER': config('DB_USER', default='postgres'),
+            'PASSWORD': config('DB_PASSWORD', default=''),
+            'HOST': config('DB_HOST', default='localhost'),
+            'PORT': config('DB_PORT', default='5432'),
+            'CONN_MAX_AGE': 60,
+            'CONN_HEALTH_CHECKS': True,
         }
     }
 
@@ -294,18 +290,25 @@ FILE_UPLOAD_DIRECTORY_PERMISSIONS = 0o755  # Secure directory permissions
 # Example: Use ClamAV or similar service to scan uploads
 
 # Cache Configuration
-CACHES = {
-    'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+USE_REDIS = config('USE_REDIS', default=False, cast=bool)
+if USE_REDIS or config('REDIS_URL', default=''):
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_redis.cache.RedisCache',
+            'LOCATION': config('REDIS_URL', default='redis://127.0.0.1:6379/1'),
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            }
         }
     }
-}
-
-# Session Configuration
-SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
+    SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 SESSION_CACHE_ALIAS = 'default'
 SESSION_COOKIE_AGE = 86400  # 1 day
 SESSION_COOKIE_HTTPONLY = True

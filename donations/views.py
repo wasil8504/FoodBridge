@@ -18,6 +18,7 @@ from accounts.models import CustomUser
 from donors.models import DonorProfile
 from recipients.models import RecipientProfile
 from .cache import cache_result, cache_queryset, generate_cache_key, invalidate_cache_pattern
+from django.views.generic import ListView
 import hashlib
 import json
 from functools import wraps
@@ -489,3 +490,19 @@ class DonationImageViewSet(viewsets.ModelViewSet):
                 cache.clear()
         except Exception:
             cache.clear()
+
+
+class DonationListView(ListView):
+    """View for listing all available donations"""
+    model = DonationListing
+    template_name = 'donations/donation_list.html'
+    context_object_name = 'donations'
+    paginate_by = 12
+
+    def get_queryset(self):
+        """Return only available donations that haven't expired"""
+        return DonationListing.objects.filter(
+            status='available'
+        ).exclude(
+            expiry_date__lt=timezone.now()
+        ).select_related('donor', 'donor_profile').prefetch_related('images').order_by('-created_at')

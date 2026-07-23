@@ -12,4 +12,6 @@ router.register(r'images', views.DonationImageViewSet, basename='donation-image'
 
 urlpatterns = [
     path('api/', include(router.urls)),
+    # Template view for listing donations
+    path('list/', views.DonationListView.as_view(), name='donation_list'),
 ]
